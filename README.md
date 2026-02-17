@@ -3,9 +3,7 @@
 
 > A flight-ready satellite mission control system built on real orbital physics, autonomous GNC, and AI-driven trajectory optimization. CommandX brings together the tools mission operators need — from live fleet monitoring to hardware stress simulation — inside a single command interface.
 
-![CommandX Dashboard](https://github.com/user-attachments/assets/177b5513-88e9-4822-8015-dc77089f9009)
 
----
 
 ## Table of Contents
 
@@ -175,6 +173,4 @@ CommandX ships with a Dockerfile, meaning it can be deployed into existing cloud
 
 ---
 
-<p align="center">
-  <strong>CommandX</strong> — Mission control that operates at the speed of your ambition.
-</p>
+![commandx](https://github.com/user-attachments/assets/3e3c3e07-0fa4-4d66-8df5-e840ecd55b03)
