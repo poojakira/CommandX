@@ -51,6 +51,8 @@ Before any mission can be marked flight-ready, it must pass Independent Verifica
 
 ## System Architecture
 
+Note: Extract the zip folder and place it as follows
+
 ```
 commandx/
 │
