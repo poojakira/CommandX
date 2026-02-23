@@ -55,37 +55,7 @@ Before any mission can be marked flight-ready, it must pass Independent Verifica
 
 ----
 
-commandx/
-│
-├── app_dashboard.py            # Streamlit UI — main entry point & command center
-│
-├── Core Physics
-│   ├── mission_engine.py       # Orbital mechanics, Kepler equations, env constants
-│   └── data_processor.py       # TLE ingestion & satellite catalog parsing
-│
-├── GNC Stack
-│   ├── gnc_kalman.py           # Extended Kalman Filter — state estimation
-│   └── rl_pilot.py             # Autonomous pilot — thrust command generation
-│
-├── Mission Planning
-│   └── ga_optimizer.py         # Genetic Algorithm — trajectory & altitude optimizer
-│
-├── Simulation Layer
-│   ├── entropy_engine.py       # IMU drift, thermal noise, radiation events
-│   └── subsystem_manager.py    # Power budget, battery, thermal monitoring
-│
-├── Validation
-│   └── system_analytics.py     # Monte Carlo IV&V, 3-sigma certification
-│
-├── Visualization
-│   ├── graphics_engine.py      # 2D tactical display & orbital overlays
-│   └── model_3d.py             # Interactive 3D spacecraft renderer
-│
-├── Data
-│   └── spacetrack_full_catalog.3le.txt   # Full satellite TLE catalog
-│
-├── requirements.txt
-└── Dockerfile
+<img width="567" height="620" alt="image" src="https://github.com/user-attachments/assets/e50edad6-5db2-4df0-96c2-83bd88e4f83f" />
 
 
 ---
