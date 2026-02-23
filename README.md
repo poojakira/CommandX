@@ -10,44 +10,79 @@
 - [Overview](#overview)
 - [Core Capabilities](#core-capabilities)
 - [System Architecture](#system-architecture)
+-  [Mission Phases](#mission-phases)
 - [Getting Started](#getting-started)
-- [Mission Phases](#mission-phases)
 - [Enterprise Value](#enterprise-value)
 
 ---
 
 ## Overview
 
-CommandX is a Python-based orbital mission control dashboard designed to simulate and manage satellite operations with real-world fidelity. It ingests live TLE (Two-Line Element) data from the Space-Track full catalog, propagates orbital states using verified physical constants, and runs an autonomous GNC (Guidance, Navigation & Control) loop powered by an Extended Kalman Filter.
+Orbital Mission Control Platform — v7.0
 
-Unlike generic space visualizers, CommandX is built for operators. Every module reflects actual flight software architecture — from IMU drift modelling in the Entropy Engine to 3-sigma certification testing in the Monte Carlo validator. The system is deployable via Docker and runs entirely in a browser through Streamlit.
+A flight-ready satellite mission control system built on real orbital physics, autonomous GNC, and AI-driven trajectory optimization. CommandX brings together the tools mission operators need — from live fleet monitoring to hardware stress simulation — inside a single, containerized command interface.
 
----
+Unlike generic space visualizers, CommandX is built for operators. Every module reflects actual flight software architecture — from IMU drift modeling in the Entropy Engine to 3-sigma certification testing in the Monte Carlo validator. The system is deployable via Docker and runs entirely in a browser through Streamlit.
 
-## Core Capabilities
+🚀 Proven Performance Metrics
 
-### 🌍 Live Fleet Tracking
-CommandX parses the full Space-Track satellite catalog (`spacetrack_full_catalog.3le.txt`) containing thousands of active and historical objects. Satellites are rendered on an interactive global map showing real-time position, coverage zones, and AOS/LOS (Acquisition of Signal / Loss of Signal) windows for active passes.
+60.0% Fuel & Risk Optimization: Engineered a Genetic Algorithm that autonomously routes trajectories to bypass high-density orbital shells (e.g., Starlink constellations). By natively avoiding collision-prone corridors, the system reduces total mission cost ($\Delta V$ + risk penalties) by 60% compared to unoptimized baseline transfers.
 
-### 🧭 Guidance, Navigation & Control (GNC)
-The GNC system simulates proximity operations — the precise close-range maneuvering required for rendezvous, inspection, and docking. At its core is an Extended Kalman Filter (`gnc_kalman.py`) operating at 10Hz, fusing noisy sensor measurements into clean state estimates of position and velocity across all six degrees of freedom. The `rl_pilot.py` autonomous pilot reads these estimates and computes real-time thrust commands, steering a 500kg spacecraft bus with a 50N thruster toward a target.
+<img width="580" height="251" alt="image" src="https://github.com/user-attachments/assets/187817bb-d348-4400-bd00-1fef367aaf77" />
 
-### 🧬 Trajectory Optimization
-The Genetic Algorithm optimizer (`ga_optimizer.py`) searches the mission solution space to find the optimal orbital altitude and transfer trajectory. Each candidate solution is evaluated against three real constraints — Delta-V fuel cost, Van Allen radiation belt exposure, and atmospheric drag — and cross-referenced against the live satellite catalog to flag Starlink-shell collision corridors. The optimizer returns the trajectory that minimizes total mission cost while satisfying all safety margins.
 
-### ⚡ Entropy Engine — Hardware Degradation Simulation
-Real hardware is never perfect. The `entropy_engine.py` module injects physics-accurate noise into every simulation step: thermal white noise (±5cm positional jitter, ±1cm/s velocity jitter), IMU gyroscope bias drift modelled as a random walk, and stochastic Single Event Upsets (SEUs) caused by radiation bit-flips. This transforms CommandX from an idealized simulator into an honest test environment.
+99.9% Verification Time Compression: Architected a high-throughput Monte Carlo IV&V suite that executes 1,000+ stochastic simulations in under 7 minutes. This replaces traditional 2-week Hardware-in-the-Loop (HITL) testing cycles, accelerating flight-readiness certification by over three orders of magnitude.
 
-### 🔋 Power & Thermal Subsystem Monitoring
-The `subsystem_manager.py` models a 6U CubeSat power bus in real time. It tracks solar panel generation (28% efficient triple-junction cells, 0.12m² area), battery state-of-charge across eclipse and sunlit periods, thruster power draw (45W), avionics baseline load (5W), and heater activation during eclipse (12W). Thermal state evolves continuously, cooling during shadow passes and heating in direct sunlight.
 
-### 📊 Monte Carlo Certification
-Before any mission can be marked flight-ready, it must pass Independent Verification & Validation (IV&V). `system_analytics.py` runs configurable Monte Carlo trials, each executing a full GNC docking simulation through the Entropy Engine's noise field. Results are scored by final docking accuracy, aggregated into mean, standard deviation, and 3-sigma worst-case margins, and compared against the 98% accuracy requirement threshold. A negative margin means the mission fails certification.
+3-Sigma Reliability (99.28%): Mathematically validated GNC robustness by simulating extreme hardware degradation (IMU drift, radiation-induced bit-flips). The system maintains a 99.27% worst-case accuracy ($\mu - 3\sigma$), exceeding strict aerospace industry requirements with a 1.27% safety margin.
 
-### 🖥️ 3D Visualization & Tactical Display
-`graphics_engine.py` and `model_3d.py` render interactive Plotly-based 3D spacecraft models, orbital trajectories, proximity operation approach corridors, and tactical overlays — all navigable in the browser without any external 3D software.
+<img width="722" height="336" alt="image" src="https://github.com/user-attachments/assets/3d2b2e07-1fc6-4b6a-9b94-887cc995f7d1" />
 
----
+
+Massive-Scale Data Ingestion: Developed a real-time pipeline that ingests, maps, and propagates the live Space-Track catalog, maintaining high-fidelity state awareness for 15,348+ active space assets.
+
+### ⚙️ Core Capabilities
+
+🌍 Live Fleet Tracking
+Parses the full Space-Track satellite catalog (spacetrack_full_catalog.3le.txt). Satellites are rendered on an interactive global map showing real-time position, coverage zones, and AOS/LOS (Acquisition of Signal / Loss of Signal) windows for active passes.
+
+🧭 Autonomous Guidance, Navigation & Control (GNC)
+Simulates proximity operations for rendezvous, inspection, and docking. At its core is an Extended Kalman Filter (EKF) operating at 10Hz, fusing noisy sensor measurements into clean state estimates across six degrees of freedom. An RL Pilot reads these estimates to compute real-time thrust commands, steering a 500kg spacecraft bus with a 50N thruster toward its target.
+
+🧬 AI Trajectory Optimization
+The Genetic Algorithm (ga_optimizer.py) evaluates candidate transfer trajectories against live physics and traffic constraints:
+
+Delta-V Fuel Cost (Hohmann base calculations)
+
+Environmental Penalties (Atmospheric drag, Van Allen radiation belt exposure)
+
+Collision Risk (Dynamic penalty scoring based on a live 10km-binned density map of 15,000+ real satellites)
+
+⚡ Entropy Engine — Hardware Degradation
+Real hardware is never perfect. The entropy_engine.py module transforms CommandX into an honest test environment by injecting physics-accurate noise:
+
+Thermal white noise (±5cm positional jitter, ±1cm/s velocity jitter)
+
+IMU gyroscope bias drift modeled as a random walk
+
+Stochastic Single Event Upsets (SEUs) caused by radiation bit-flips
+
+📊 Monte Carlo Certification (IV&V)
+Missions must pass Independent Verification & Validation. system_analytics.py executes thousands of full GNC docking simulations through the Entropy Engine's noise field. Results are scored by docking accuracy and aggregated to prove 3-sigma worst-case margins stay above strict 98% aerospace requirement thresholds.
+
+🖥️ Tactical 3D Visualization
+Renders interactive Plotly-based 3D spacecraft models, orbital trajectories, proximity approach corridors, and tactical overlays natively in the browser.
+
+ ### 🗺️ Mission Phases (Dashboard UI)
+CommandX organizes operations into four sequential mission phases, mapped directly to the Streamlit UI:
+
+Phase 1 — Command Center: Live global fleet status. Monitor satellite health, link budget margins, and AOS/LOS scheduling.
+
+Phase 2 — Flight Dynamics (GNC): Simulation workspace. Run proximity operations, observe docking approaches, and review thruster fuel consumption in real time.
+
+Phase 3 — Certification (IV&V): Monte Carlo testing suite. Execute thousands of trials and generate a pass/fail statistical margin report.
+
+Phase 4 — Mission Planning: AI trajectory optimization. Input target orbits and let the Genetic Algorithm return the safest, most efficient transfer path.
 
 ## System Architecture
 
@@ -91,58 +126,19 @@ streamlit run app_dashboard.py
 
 ### Dependencies
 
-| Package | Role |
-|---|---|
-| `streamlit` | Web dashboard UI |
-| `plotly` | Interactive 3D and 2D visualizations |
-| `numpy` | Linear algebra, state vectors, physics |
-| `scipy` | Scientific computing utilities |
-| `pandas` | Tabular satellite data handling |
-| `skyfield` | TLE propagation and orbital computation |
-| `deap` | Genetic algorithm framework |
-| `watchdog` | File system event monitoring |
+<img width="652" height="256" alt="image" src="https://github.com/user-attachments/assets/dc90af8f-f4de-4a32-967d-1cc287937c30" />
+
 
 ---
 
-## Mission Phases
-
-CommandX organizes operations into four sequential mission phases, each mapping to a dedicated section of the dashboard.
-
-**Phase 1 — Command Center**
-Live global fleet status. Operators monitor satellite health indicators, link budget margins, and AOS/LOS scheduling across the entire tracked constellation.
-
-**Phase 2 — Flight Dynamics**
-GNC simulation workspace. Run proximity operations, tune Kalman Filter parameters, observe docking approach trajectories, and review thruster fuel consumption in real time.
-
-**Phase 3 — Certification**
-Monte Carlo testing suite. Define the number of trial iterations, execute the full IV&V run, and receive a pass/fail certification report with 3-sigma statistical margins against the 98% accuracy requirement.
-
-**Phase 4 — Mission Planning**
-AI-assisted trajectory optimization. Input mission constraints (target orbit, fuel budget, radiation tolerance) and let the Genetic Algorithm return the safest, most efficient transfer trajectory with full collision risk scoring.
-
----
 
 ## Enterprise Value
 
-CommandX was designed with production-grade mission operations in mind. For organizations operating satellite programs — whether commercial, research, or defence — the platform delivers measurable value at multiple levels.
+Operationalizing AI: Automates complex orbital planning, allowing leaner teams to identify optimal, collision-free transfer orbits without relying purely on manual dynamicist heuristics.
 
-### Reducing the Cost of Mission Validation
-Traditional spacecraft validation relies on expensive hardware-in-the-loop (HITL) test benches and contracted IV&V services. CommandX brings that capability into software. The Monte Carlo certification engine can run thousands of simulated docking scenarios in minutes, identifying failure modes before hardware is ever involved. For a commercial operator, this compresses pre-launch verification timelines and reduces dependency on third-party testing contracts — translating directly into lower program costs and faster time-to-orbit.
+Risk Intelligence: Quantifies the exact statistical impact of hardware degradation on mission success probability, outputting hard data for insurance underwriting and regulatory compliance.
 
-### Operationalizing AI-Driven Mission Planning
-Orbital mission planning is still largely manual at many organizations — a flight dynamicist reviews trajectory options and selects based on heuristics and experience. CommandX automates this through a Genetic Algorithm that simultaneously optimizes for fuel cost, radiation risk, atmospheric drag, and collision avoidance against the full live catalog. This makes optimal planning accessible without requiring deep orbital mechanics expertise on every shift, enabling leaner ground operations teams while improving decision quality.
-
-### Fleet Scalability Without Architectural Rework
-The platform is built around the full Space-Track satellite catalog rather than a fixed list of owned assets. As an operator's constellation grows — from five satellites to five hundred — CommandX scales without architectural changes. The same TLE ingestion pipeline, the same visualization stack, and the same GNC tools apply regardless of fleet size. For constellation operators, this is a significant operational advantage over bespoke per-satellite tooling that becomes a maintenance liability at scale.
-
-### Quantifiable Risk Intelligence for Mission Assurance
-The Entropy Engine's IMU drift, thermal noise, and radiation bit-flip simulation gives risk and reliability teams a tool to quantify the impact of hardware degradation on mission success probability. Running certification trials through intentionally degraded hardware states produces statistical evidence of system robustness — 3-sigma worst-case margins — that can support insurance underwriting, regulatory submissions, and formal mission assurance reviews. These outputs have direct financial and compliance implications at the enterprise level that generic simulators cannot provide.
-
-### Subsystem Health for Asset Lifecycle Management
-The power and thermal subsystem monitor provides continuous visibility into battery state-of-charge, solar generation efficiency, and thermal margin across eclipse cycles. For operators managing satellite lifetime and planning end-of-life deorbit, this data directly informs battery degradation modelling and remaining useful life estimates. Those decisions affect asset valuation on balance sheets, spectrum license compliance with regulators, and orbital slot management — all critical concerns for any operator running a commercial satellite program.
-
-### Rapid Integration into Existing Ground Infrastructure
-CommandX ships with a Dockerfile, meaning it can be deployed into existing cloud infrastructure in minutes. Whether running on a dedicated ground station server or a managed Kubernetes cluster, the containerized architecture allows DevOps and mission operations teams to integrate CommandX alongside other ground segment software without custom environment configuration. This lowers adoption cost, simplifies version management, and makes the platform straightforward to scale as operational demands increase.
+Scalability: Built on a unified catalog architecture that scales effortlessly from tracking 5 owned assets to monitoring a 500-satellite constellation without underlying code rewrites.
 
 ---
 
