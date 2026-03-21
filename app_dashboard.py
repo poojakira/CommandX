@@ -14,6 +14,7 @@ from subsystem_manager import PowerThermalSubsystem
 from entropy_engine import EntropyEngine
 from graphics_engine import TacticalDisplay
 from model_3d import SatelliteModel  # 3D Visuals
+from emergency_ops import AnomalyScenario
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
@@ -42,7 +43,7 @@ st.sidebar.markdown("---")
 
 page = st.sidebar.radio(
     "Mission Phase",
-    ["1. Command Center", "2. Flight Dynamics (GNC)", "3. Certification (IV&V)", "4. Mission Planning", "5. System Audit"]
+    ["1. Command Center", "2. Flight Dynamics (GNC)", "3. Certification (IV&V)", "4. Mission Planning", "5. Emergency Operations"]
 )
 
 st.sidebar.markdown("---")
@@ -157,31 +158,76 @@ elif page == "2. Flight Dynamics (GNC)":
         m2.metric("Final Range", f"{dist*100:.1f} cm")
 
 # ==============================================================================
-# PAGE 3: CERTIFICATION (IV&V)
+# PAGE 5: EMERGENCY OPERATIONS (Anomaly Response)
 # ==============================================================================
-elif page == "3. Certification (IV&V)":
-    st.title("📊 Reliability Engineering")
-    st.markdown("Independent Verification & Validation (IV&V).")
+elif page == "5. Emergency Operations":
+    st.title("🚨 Emergency Operations")
+    st.markdown("Critical Subsystem Anomaly Response Simulator.")
     
-    if st.button("RUN MONTE CARLO SUITE"):
-        with st.spinner("Running 50 stochastic simulations..."):
-            stats = SystemValidator.run_monte_carlo(50)
+    if 'scenario' not in st.session_state:
+        st.session_state['scenario'] = AnomalyScenario()
+    
+    scenario = st.session_state['scenario']
+    
+    col_ctrl, col_telemetry = st.columns([1, 2])
+    
+    with col_ctrl:
+        st.subheader("Control Interface")
+        if not scenario.is_active and not scenario.resolved and not scenario.failed:
+            if st.button("🔥 TRIGGER SIMULATED ANOMALY"):
+                scenario.trigger()
+                st.rerun()
         
-        # REALISM: Flight Certification Metrics
-        kpi1, kpi2, kpi3 = st.columns(3)
-        kpi1.metric("Mean Accuracy", f"{stats['mean']:.2f}%")
-        kpi2.metric("3-Sigma Confidence", f"{stats['3_sigma_low']:.2f}%")
+        if scenario.is_active:
+            st.error("⚠️ CRITICAL ANOMALY ACTIVE")
+            if st.button("🔌 [SHUTDOWN_PAYLOAD]"):
+                msg = scenario.execute_command("SHUTDOWN_PAYLOAD")
+                st.toast(msg)
+            if st.button("🛡️ [ORIENT_SUN_SHADE]"):
+                msg = scenario.execute_command("ORIENT_SUN_SHADE")
+                st.toast(msg)
         
-        if stats['3_sigma_low'] >= 98.0:
-            kpi3.metric("Certification", "FLIGHT READY", delta="PASSED")
-            st.success("✅ System meets NASA Class-B Software Safety Requirements.")
-        else:
-            kpi3.metric("Certification", "GROUNDED", delta="FAILED", delta_color="inverse")
-            st.error("❌ System requires GNC tuning.")
+        if scenario.resolved or scenario.failed:
+            if st.button("🔄 RESET SIMULATION"):
+                st.session_state['scenario'] = AnomalyScenario()
+                st.rerun()
 
-        fig = go.Figure(data=[go.Histogram(x=stats['raw_data'], nbinsx=20, marker_color='#0052cc')])
-        fig.update_layout(title="Monte Carlo Distribution", paper_bgcolor="white", plot_bgcolor="white")
-        st.plotly_chart(fig, use_container_width=True)
+    with col_telemetry:
+        if scenario.is_active or scenario.resolved or scenario.failed:
+            scenario.update()
+            status = scenario.get_status()
+            
+            # Dynamic Colors
+            temp_color = "normal" if status['temp'] < 60 else "inverse"
+            
+            m1, m2, m3 = st.columns(3)
+            m1.metric("Bus Temperature", f"{status['temp']:.1f} °C", delta=f"{status['temp']-25:.1f}", delta_color=temp_color)
+            m2.metric("Response Timer", f"{30 - status['elapsed']:.1f}s", delta="Countdown")
+            m3.metric("System Health", "CRITICAL" if status['active'] else ("STABLE" if status['resolved'] else "FAILED"))
+            
+            if status['failed']:
+                st.error(f"💀 MISSION FAILURE: {status['failure_reason']}")
+            elif status['resolved']:
+                st.success("✅ MISSION SAVED: Operator response neutralized thermal runaway.")
+            
+            # Real-time Telemetry Graph
+            if 'temp_history' not in st.session_state:
+                st.session_state['temp_history'] = []
+            
+            if status['active']:
+                st.session_state['temp_history'].append(status['temp'])
+                if len(st.session_state['temp_history']) > 100:
+                    st.session_state['temp_history'].pop(0)
+                
+            fig = px.line(y=st.session_state['temp_history'], title="Subsystem Thermal Telemetry (Live)")
+            fig.update_layout(xaxis_title="Time Step (100ms)", yaxis_title="Temp (°C)", paper_bgcolor="white", plot_bgcolor="white")
+            st.plotly_chart(fig, use_container_width=True)
+            
+            if status['active'] and not status['resolved'] and not status['failed']:
+                time.sleep(0.1)
+                st.rerun()
+        else:
+            st.info("Standing by for anomaly injection. Monitor subsystem integrity.")
 
 # ==============================================================================
 # PAGE 4: MISSION PLANNING (Physics-Aware)
