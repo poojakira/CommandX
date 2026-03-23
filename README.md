@@ -101,15 +101,25 @@ Access the application at `http://localhost:8501`.
 
 ### Deploying with Kubernetes
 We provide Kubernetes manifests in the `k8s/` directory.
-1. Apply the deployment and service configurations:
+
+**(Verified Locally on Minikube)**
+1. If using [Minikube](https://minikube.sigs.k8s.io/), ensure your local Docker daemon is running and execute:
+   ```bash
+   minikube start --driver=docker
+   # Build the image and load it into minikube
+   docker build -t commandx:latest .
+   minikube image load commandx:latest
+   ```
+2. Apply the deployment and service configurations:
    ```bash
    kubectl apply -f k8s/
    ```
-2. Retrieve the external IP (or use minikube service alias):
+3. Retrieve the external IP (or map to localhost via minikube service alias):
    ```bash
    kubectl get svc commandx-service
+   # For Minikube users:
+   minikube service commandx-service --url
    ```
-
 ### Deploying to Amazon EC2
 We provide an `ec2-user-data.sh` script to auto-provision an EC2 instance.
 1. Launch an EC2 instance (Amazon Linux or Ubuntu) and paste the contents of `ec2-user-data.sh` into the **User Data** field under Advanced Details.
