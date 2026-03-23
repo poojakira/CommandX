@@ -79,11 +79,42 @@ graph TD
    pip install -r requirements.txt
    ```
 
-### Running the Platform
-Launch the Mission Control dashboard:
+### Running Locally
+Launch the Mission Control dashboard natively using Python:
 ```bash
 streamlit run app_dashboard.py
 ```
+
+## 🌐 Deployment Pipeline
+
+### Deploying with Docker
+You can containerize the CommandX pipeline using the provided `Dockerfile`.
+1. Build the Docker image:
+   ```bash
+   docker build -t commandx:latest .
+   ```
+2. Run the container:
+   ```bash
+   docker run -d -p 8501:8501 --name commandx commandx:latest
+   ```
+Access the application at `http://localhost:8501`.
+
+### Deploying with Kubernetes
+We provide Kubernetes manifests in the `k8s/` directory.
+1. Apply the deployment and service configurations:
+   ```bash
+   kubectl apply -f k8s/
+   ```
+2. Retrieve the external IP (or use minikube service alias):
+   ```bash
+   kubectl get svc commandx-service
+   ```
+
+### Deploying to Amazon EC2
+We provide an `ec2-user-data.sh` script to auto-provision an EC2 instance.
+1. Launch an EC2 instance (Amazon Linux or Ubuntu) and paste the contents of `ec2-user-data.sh` into the **User Data** field under Advanced Details.
+2. Ensure your Security Group allows inbound HTTP traffic on **Port 80**.
+3. Once provisioned, SSH into the instance and follow the instructions in the script comments to build and run the Docker image.
 
 ---
 

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: commandx-deployment
+  labels:
+    app: commandx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: commandx
+  template:
+    metadata:
+      labels:
+        app: commandx
+    spec:
+      containers:
+      - name: commandx
+        image: commandx:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8501
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1"
