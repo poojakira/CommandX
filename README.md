@@ -1,7 +1,7 @@
 # 🛰️ CommandX: Advanced Orbital Dynamics & Mission Planning
 
-[![Version](https://img.shields.io/badge/version-v7.0-blue.svg?style=flat-square)](https://github.com/yourusername/CommandX)
-[![Status](https://img.shields.io/badge/status-Flight--Ready-green.svg?style=flat-square)](https://github.com/yourusername/CommandX)
+[![Version](https://img.shields.io/badge/version-v7.0-blue.svg?style=flat-square)](https://github.com/poojakira/CommandX)
+[![Status](https://img.shields.io/badge/status-Flight--Ready-green.svg?style=flat-square)](https://github.com/poojakira/CommandX)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat-square)](LICENSE)
 
 CommandX is a high-fidelity orbital mechanics platform designed for satellite constellation management, proximity operations, and mission trajectory optimization. It integrates real-world Space-Track TLE data with advanced GNC (Guidance, Navigation, and Control) algorithms to provide a production-grade simulation environment.
@@ -19,6 +19,23 @@ CommandX addresses these challenges by automating the "Sense-Analyze-Act" loop f
 - **Live Traffic Awareness**: Automatically parses live `3LE` catalogs to map orbital density.
 - **Physics-First Optimization**: Uses Genetic Algorithms to find fuel-efficient trajectories that avoid radiation belts and high-drag zones.
 - **Robust Estimation**: Implements an Extended Kalman Filter (EKF) to maintain state awareness even with noisy sensor telemetry.
+
+---
+
+## 🎥 System Demonstration
+*(Placeholder: [Insert high-quality GIF of Dashboard here])*
+*(Placeholder: [Insert 3D Orbit Visualization Screenshot here])*
+
+## 🧠 Technical Highlights
+- **EKF for 6-DOF orbit estimation**: Real-world noise cancellation using Extended Kalman Filters.
+- **GA over N-dim search space**: Fuel-optimized Hohmann transfers evading radiation zones.
+- **Monte Carlo IV&V with 1,000 randomized scenarios**: Production-grade verification proving Mission Assurance.
+- **Real-Time Data Pipelines**: Asynchronous streaming thread architecture buffering high-frequency telemetry into an ML backend.
+
+## ⚡ Why This Matters for GPU / Accelerated Computing
+While the current prototype utilizes CPU-based Scikit-Learn logic, this architecture is designed to scale directly onto **NVIDIA Hardware**.
+- **Monte Carlo Simulation**: The IV&V logic is naturally paralyzable; transitioning to **CUDA/CuPy** would allow millions of stochastic docking trials in milliseconds instead of seconds.
+- **Inference Serving**: The `BatchInferenceEngine` utilizes dynamic batching, structurally identical to **NVIDIA Triton Inference Server**. Dropping in TensorRT/ONNX models for real-time cyber anomaly detection would exploit GPU memory bandwidth, maintaining the strict 20ms SLA latency over astronomical distributed-telemetry volumes.
 
 ---
 
@@ -71,7 +88,7 @@ graph TD
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/CommandX.git
+   git clone https://github.com/poojakira/CommandX.git
    cd CommandX
    ```
 2. Install dependencies:
