@@ -16,6 +16,7 @@ from entropy_engine import EntropyEngine
 from graphics_engine import TacticalDisplay
 from model_3d import SatelliteModel  # 3D Visuals
 from emergency_ops import AnomalyScenario
+from streaming_ml_engine import PipelineOrchestrator
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
@@ -44,12 +45,17 @@ st.sidebar.markdown("---")
 
 page = st.sidebar.radio(
     "Mission Phase",
-    ["1. Command Center", "2. Flight Dynamics (GNC)", "3. Certification (IV&V)", "4. Mission Planning", "5. Emergency Operations"]
+    ["1. Command Center", "2. Flight Dynamics (GNC)", "3. Certification (IV&V)", "4. Mission Planning", "5. Emergency Operations", "6. ML Pipeline & Security"]
 )
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("**Project Lead:** Apex-X")
 st.sidebar.caption("Military-Grade Orbital Assets")
+
+# Initialize Streaming Engine and attach to session_state so it persists across reruns
+if 'streamer' not in st.session_state:
+    st.session_state['streamer'] = PipelineOrchestrator(frequency_hz=20, buffer_duration_sec=10)
+    st.session_state['streamer'].start()
 
 # ==============================================================================
 # PAGE 1: COMMAND CENTER (Global Awareness)
@@ -281,5 +287,137 @@ elif page == "5. Emergency Operations":
             if status['active'] and not status['resolved'] and not status['failed']:
                 time.sleep(0.1)
                 st.rerun()
-        else:
-            st.info("Standing by for anomaly injection. Monitor subsystem integrity.")
+# ==============================================================================
+# PAGE 6: ML PIPELINE & SECURITY
+# ==============================================================================
+elif page == "6. ML Pipeline & Security":
+    st.title("⚡ Real-Time ML Systems Platform")
+    st.markdown("Continuous streaming data with live anomaly detection & prediction.")
+
+    streamer = st.session_state['streamer']
+    metrics = streamer.get_metrics()
+    
+    # 1. Top Metrics Banner
+    st.markdown("### 📊 Enterprise System Metrics")
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("Batch Inference Latency", f"{metrics['latency_ms']:.2f} ms")
+    m2.metric("Inference Throughput", f"{metrics['throughput_hz']:.1f} hz")
+    m3.metric("Ingestion Queue Depth", f"{metrics['queue_size']}")
+    m4.metric("Output Buffer Load", f"{metrics['buffer_usage']:.1f}%")
+    
+    st.divider()
+
+    # 2. Main Live Dashboards
+    col_pipeline, col_security = st.columns([1, 1])
+    
+    data_buffer = streamer.get_latest_data()
+    
+    if len(data_buffer) < 20: # Wait for buffer to fill
+        st.info("Gathering telemetry for ML inference... Please hold.")
+        time.sleep(1.0)
+        st.rerun()
+    else:
+        df = pd.DataFrame(data_buffer)
+        
+        with col_pipeline:
+            st.markdown("### 🤖 CPU Prediction Model")
+            st.caption("Trailing 5s Ridge Regression Forecast")
+            
+            # Simple line chart comparing actual to predicted
+            fig_pred = go.Figure()
+            
+            # Actual Data Series
+            fig_pred.add_trace(go.Scatter(
+                x=df['timestamp'], 
+                y=df['cpu_load'],
+                mode='lines',
+                name='Actual CPU',
+                line=dict(color='#0052cc', width=2)
+            ))
+            
+            # Predicted future point (plot as a distinct line mapped slightly ahead based on timestamps)
+            # Since the prediction is for t+5s, we can overlay it shifted.
+            future_times = df['timestamp'] + 5.0
+            fig_pred.add_trace(go.Scatter(
+                x=future_times, 
+                y=df['ml_predicted_cpu_t5'],
+                mode='lines',
+                line=dict(color='#ef4444', dash='dot'),
+                name='Predicted (t+5s)'
+            ))
+            
+            fig_pred.update_layout(
+                yaxis_title="CPU Load (%)",
+                xaxis_title="Simulation Time",
+                paper_bgcolor="white", plot_bgcolor="white",
+                margin=dict(l=20, r=20, t=30, b=20),
+                height=300
+            )
+            # Hide default xaxis labels for clean look
+            fig_pred.update_xaxes(showticklabels=False)
+            st.plotly_chart(fig_pred, use_container_width=True)
+
+        with col_security:
+            st.markdown("### 🔐 Cyber Threat Detection")
+            st.caption("Isolation Forest Scoring")
+            
+            latest_status = df.iloc[-1]
+            is_anomaly = latest_status.get('ml_is_anomaly', False)
+            ground_truth = latest_status.get('ground_truth_attack', False)
+
+            if is_anomaly:
+                st.error("🚨 ANOMALY DETECTED IN PIPELINE STREAM 🚨")
+            else:
+                st.success("✅ PIPELINE SECURE")
+
+            # Plot Anomaly Score vs Network TX (Common Attack Vector)
+            fig_sec = go.Figure()
+            
+            # Base Network traffic
+            fig_sec.add_trace(go.Scatter(
+                x=df['timestamp'],
+                y=df['network_tx'],
+                mode='lines',
+                line=dict(color='gray', width=1),
+                name='Network I/O'
+            ))
+
+            # Overlay anomalies
+            anomalies = df[df['ml_is_anomaly'] == True]
+            if not anomalies.empty:
+                fig_sec.add_trace(go.Scatter(
+                    x=anomalies['timestamp'],
+                    y=anomalies['network_tx'],
+                    mode='markers',
+                    marker=dict(color='red', size=10, symbol='x'),
+                    name='ML Flagged Anomaly'
+                ))
+
+            fig_sec.update_layout(
+                yaxis_title="Network TX (kbps)",
+                paper_bgcolor="white", plot_bgcolor="white",
+                margin=dict(l=20, r=20, t=30, b=20),
+                height=300
+            )
+            fig_sec.update_xaxes(showticklabels=False)
+            st.plotly_chart(fig_sec, use_container_width=True)
+
+        # 3. Clean Live Log
+        st.markdown("### 🗒️ Telemetry Feed")
+        log_df = df[['timestamp', 'cpu_load', 'memory_usage', 'network_tx', 'ml_is_anomaly']].tail(5)
+        # Convert timestamp to relative time string nicely
+        log_df['Time'] = pd.to_datetime(log_df['timestamp'], unit='s').dt.strftime('%H:%M:%S.%f').str[:-3]
+        log_df['CPU %'] = log_df['cpu_load'].round(1)
+        log_df['Mem %'] = log_df['memory_usage'].round(1)
+        log_df['Net (kbps)'] = log_df['network_tx'].round(0)
+        log_df['Threat'] = log_df['ml_is_anomaly'].apply(lambda x: '🚨 HIGH' if x else 'LOW')
+        
+        st.dataframe(
+            log_df[['Time', 'CPU %', 'Mem %', 'Net (kbps)', 'Threat']], 
+            use_container_width=True,
+            hide_index=True
+        )
+
+        # Trigger auto-refresh for live effect
+        time.sleep(0.5)
+        st.rerun()
