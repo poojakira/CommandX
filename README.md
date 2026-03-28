@@ -184,6 +184,77 @@ python system_analytics.py
 
 ---
 
+## 🏗️ Contributions
+
+### Pooja Kiran — Lead ML Systems Architect
+**Domain:** ML Architecture · Optimization · Trajectory Planning
+
+**1. Genetic Algorithm Trajectory Optimizer** (`ga_optimizer.py`)
+   - Multi-objective optimization for fuel-efficient Hohmann transfers
+   - Radiation belt avoidance constraints (Van Allen belts)
+   - High-drag zone exclusion logic for orbital decay prevention
+   - Population size: 100 candidates, 50 generations
+
+**2. Extended Kalman Filter (EKF) Implementation** (`gnc_kalman.py`)
+   - 6-DOF state estimation (position + velocity)
+   - Process noise modeling for J2 perturbations
+   - Measurement noise compensation from noisy sensor telemetry
+   - Real-time state prediction at 10 Hz
+
+**3. Real-Time ML Inference Engine** (`streaming_ml_engine.py`)
+   - Batch inference engine with dynamic batching
+   - Async telemetry buffering for high-frequency data (200 Hz+)
+   - Isolation Forest anomaly detection for cyber threats
+   - GPU-ready architecture for CUDA/CuPy acceleration
+
+**4. Monte Carlo IV&V Suite** (`system_analytics.py`)
+   - 1,000 stochastic docking simulations for mission assurance
+   - 3-sigma accuracy confidence intervals
+   - Automated verification and validation for flight readiness
+
+**5. TLE Data Processing Pipeline** (`data_processor.py`)
+   - Live Space-Track catalog parsing (17,000+ active satellites)
+   - Orbital density mapping for conjunction risk assessment
+   - TLE format validation and error handling
+
+### Rhutvik Pachghare — Robotics & GNC Engineer
+**Domain:** Guidance, Navigation, Control · Physics Simulation · Visualization · DevOps
+
+**1. Mission Physics Engine** (`mission_engine.py`)
+   - High-fidelity orbital physics: J2 perturbations, atmospheric drag, Keplerian dynamics
+   - Hohmann transfer calculations with delta-v optimization
+   - Orbital period and energy computations
+
+**2. 3D Tactical Visualization** (`graphics_engine.py`, `model_3d.py`)
+   - Real-time 3D orbital path rendering using Plotly
+   - CAD-derived spacecraft geometry and mass property models
+   - Interactive mission control dashboard
+
+**3. Spacecraft Subsystem Manager** (`subsystem_manager.py`)
+   - Hardware abstraction layer for satellite bus telemetry
+   - Power, thermal, and attitude control system interfaces
+   - Real-time health monitoring at 1 Hz
+
+**4. Emergency Operations Protocol** (`emergency_ops.py`)
+   - Safety-critical fail-safes and automated decommissioning
+   - Collision avoidance maneuver triggers
+   - Autonomous orbit-lowering for end-of-life disposal
+
+**5. Cloud-Native Deployment** (K8s, Docker, EC2)
+   - Kubernetes manifests for production orchestration
+   - Docker containerization for portable deployment
+   - EC2 user-data provisioning script for AWS auto-scaling
+   - CI/CD pipeline with pytest integration
+
+**6. Documentation & Engineering Governance**
+   - Restructured README with engineering focus sections
+   - CODEOWNERS.md for domain ownership
+   - Technical design documentation
+
+---
+
+
+
 ## 📜 License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
