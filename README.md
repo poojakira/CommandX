@@ -1,93 +1,64 @@
-# CommandX: Advanced Orbital Dynamics & Mission Planning
+# CommandX — Orbital Dynamics & Mission Planning
+
+**Orbital mechanics simulation for satellite constellation management — academic/personal project**
 
 [![Version](https://img.shields.io/badge/version-v7.0-blue.svg?style=flat-square)](https://github.com/poojakira/CommandX)
-[![Status](https://img.shields.io/badge/status-Flight--Ready-green.svg?style=flat-square)](https://github.com/poojakira/CommandX)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg?style=flat-square)](LICENSE)
 
-CommandX is a high-fidelity orbital mechanics platform designed for satellite constellation management, proximity operations, and mission trajectory optimization. It integrates real-world Space-Track TLE data with advanced GNC (Guidance, Navigation, and Control) algorithms to provide a production-grade simulation environment.
+**Genetic Algorithm Optimizer** · **Extended Kalman Filter** · **Monte Carlo IV&V** · **TLE Data Pipeline** · **Streamlit Dashboard**
 
 ---
 
-## 1. Problem: Orbital Congestion
+## 1. Overview
 
-As of 2024, there are over 17,000 active satellites and hundreds of thousands of debris particles in Low Earth Orbit (LEO). Legacy mission planning tools often:
+CommandX is an orbital mechanics simulation platform built to explore satellite constellation management, proximity operations, and mission trajectory optimization. It integrates Space-Track TLE data with GNC (Guidance, Navigation, and Control) algorithms as a hands-on learning project in orbital mechanics, ML systems, and DevOps.
 
-- **Ignore Live Traffic**: Planning in a vacuum leads to conjunction risks
-- **Simplistic Physics**: Failing to account for J2 perturbations or atmospheric drag
-- **Manual Optimization**: Relying on human intuition for complex multi-constraint transfers
+### Key Features
 
----
-
-## 2. Solution: CommandX
-
-CommandX addresses these challenges by automating the Sense-Analyze-Act loop for orbital assets:
-
-- **Live Traffic Awareness**: Automatically parses live 3LE catalogs to map orbital density
-- **Physics-First Optimization**: Uses Genetic Algorithms to find fuel-efficient trajectories that avoid radiation belts and high-drag zones
-- **Robust Estimation**: Implements an Extended Kalman Filter (EKF) to maintain state awareness even with noisy sensor telemetry
+- **Genetic Algorithm Optimizer** — Multi-objective fuel-optimal trajectory optimization over N-dimensional search space
+- **Extended Kalman Filter (EKF)** — 6-DOF orbit estimation with noise cancellation for state awareness
+- **Monte Carlo IV&V** — 1,000 stochastic docking simulations with 3-sigma confidence intervals
+- **TLE Data Pipeline** — Parses live 3LE Space-Track catalogs for 17,000+ active satellite records
+- **Streaming ML Engine** — Async telemetry buffering with real-time ML inference backend
 
 ---
 
-## 3. Technical Highlights
+## 2. Module Structure
 
-- **EKF for 6-DOF orbit estimation**: Real-world noise cancellation using Extended Kalman Filters
-- **GA over N-dim search space**: Fuel-optimized Hohmann transfers evading radiation zones
-- **Monte Carlo IV&V with 1,000 randomized scenarios**: Production-grade verification proving Mission Assurance
-- **Real-Time Data Pipelines**: Asynchronous streaming thread architecture buffering high-frequency telemetry into an ML backend
+### GNC & Orbital Mechanics
 
----
+| # | Module | Description |
+|---|---|---|
+| 1 | `mission_engine.py` | Orbital physics (J2 perturbations, Hohmann transfers, Keplerian dynamics) |
+| 2 | `gnc_kalman.py` | Guidance, Navigation, and Control via Extended Kalman Filters (EKF) |
+| 3 | `rl_pilot.py` | Actuator control and PID logic for precision docking simulation |
+| 4 | `graphics_engine.py` | 3D trajectory visualizations using Plotly |
+| 5 | `model_3d.py` | Spacecraft geometry and mass property models |
+| 6 | `subsystem_manager.py` | Satellite bus telemetry abstraction |
+| 7 | `emergency_ops.py` | Fail-safe and decommissioning protocols |
 
-## 4. Engineering Focus Areas
+### ML & Data
 
-### Robotics & GNC Engineer Focus
-
-| Module | Description |
-|---|---|
-| `mission_engine.py` | High-fidelity orbital physics (J2 perturbations, Hohmann transfers, Keplerian dynamics) |
-| `gnc_kalman.py` | Guidance, Navigation, and Control via Extended Kalman Filters (EKF) |
-| `rl_pilot.py` | Low-level actuator control and PID logic for precision docking |
-| `graphics_engine.py` | 3D tactical visualizations using Plotly |
-| `model_3d.py` | CAD-derived spacecraft geometry and mass property models |
-| `subsystem_manager.py` | Hardware abstraction layer for satellite bus telemetry |
-| `emergency_ops.py` | Safety-critical fail-safes and automated decommissioning protocols |
-
-### ML & Data Engineer Focus
-
-| Module | Description |
-|---|---|
-| `ga_optimizer.py` | Multi-objective trajectory optimization via Genetic Algorithms |
-| `streaming_ml_engine.py` | Asynchronous telemetry buffering and real-time ML inference backend |
-| `system_analytics.py` | Monte Carlo IV&V suite for statistical flight readiness verification |
-| `data_processor.py` | TLE parsing, space-object catalog management, and data cleaning |
-| `run_anomaly_test.py` | Deployment-ready cyber anomaly detection using isolation forests |
-| `entropy_engine.py` | Statistical analysis of state-space uncertainty and information gain |
+| # | Module | Description |
+|---|---|---|
+| 1 | `ga_optimizer.py` | Multi-objective trajectory optimization via Genetic Algorithms |
+| 2 | `streaming_ml_engine.py` | Async telemetry buffering and real-time ML inference backend |
+| 3 | `system_analytics.py` | Monte Carlo IV&V suite for statistical verification |
+| 4 | `data_processor.py` | TLE parsing, catalog management, and data cleaning |
+| 5 | `run_anomaly_test.py` | Isolation Forest-based anomaly detection on telemetry streams |
+| 6 | `entropy_engine.py` | Statistical analysis of state-space uncertainty |
 
 ### Shared Infrastructure
 
-| Module | Description |
-|---|---|
-| `app_dashboard.py` | Main Streamlit mission control dashboard |
-| `requirements.txt` | Python dependency manifest |
-| `Dockerfile` | Containerization configuration for cloud deployment |
-| `k8s/` | Kubernetes manifests for orchestration |
+| # | Module | Description |
+|---|---|---|
+| 1 | `app_dashboard.py` | Main Streamlit mission control dashboard |
+| 2 | `Dockerfile` | Containerization for Docker/K8s deployment |
+| 3 | `k8s/` | Kubernetes manifests for orchestration |
 
 ---
 
-## 5. GPU / Accelerated Computing Scalability
-
-- **Monte Carlo Simulation**: The IV&V logic is naturally parallelizable; transitioning to CUDA/CuPy would allow millions of stochastic docking trials in milliseconds
-- **Inference Serving**: The `BatchInferenceEngine` utilizes dynamic batching, structurally identical to NVIDIA Triton Inference Server; maintains strict 20ms SLA latency
-
----
-
-## 6. Getting Started
-
-### Prerequisites
-
-- Python 3.9+
-- Pip (Python Package Manager)
-
-### Installation
+## 3. Quick Start
 
 ```bash
 git clone https://github.com/poojakira/CommandX.git
@@ -98,7 +69,7 @@ streamlit run app_dashboard.py
 
 ---
 
-## 7. Deployment Pipeline
+## 4. Deployment
 
 ### Docker
 
@@ -114,18 +85,17 @@ minikube start --driver=docker
 docker build -t commandx:latest .
 minikube image load commandx:latest
 kubectl apply -f k8s/
-kubectl get svc commandx-service
 ```
 
 ### Amazon EC2
 
 - Launch EC2 instance (Amazon Linux or Ubuntu)
-- Paste contents of `ec2-user-data.sh` into User Data field under Advanced Details
-- Ensure Security Group allows inbound HTTP traffic on **Port 80**
+- Paste contents of `ec2-user-data.sh` into User Data field
+- Allow inbound HTTP on Port 80
 
 ---
 
-## 8. Verification & Validation (IV&V)
+## 5. Testing & Verification
 
 ```bash
 python system_analytics.py
@@ -133,37 +103,45 @@ python system_analytics.py
 
 Executes 1,000 stochastic docking simulations and reports 3-sigma accuracy confidence intervals.
 
----
-
-## 9. License
-
-This project is licensed under the MIT License.
+| Suite | Count |
+|---|---|
+| Monte Carlo simulations | 1,000 scenarios |
 
 ---
 
-## 10. Team Contributions
+## 6. References
 
-### Pooja Kiran — Lead ML & Orbital Intelligence Engineer
+- **Orbital Mechanics**: Bate, Mueller & White, Fundamentals of Astrodynamics
+- **Kalman Filter**: Welch & Bishop, Introduction to the Kalman Filter
+- **Space-Track TLE Data**: https://www.space-track.org/
 
-| # | Contribution Area | Details | Quantified Impact |
+---
+
+## 7. Team Contributions
+
+> This is an academic/personal project built to learn orbital mechanics simulation, ML systems, and DevOps. Neither contributor has professional industry experience — all work was done as self-directed learning.
+
+### Pooja Kiran
+
+| # | What I Worked On | What I Built / Learned | Outcome |
 |---|---|---|---|
-| 1 | Genetic Algorithm Trajectory Optimizer | Designed and implemented `ga_optimizer.py`: multi-objective fuel-optimal trajectory optimization via Genetic Algorithms over N-dimensional search space, evading radiation belts and high-drag zones | Produces fuel-optimal Hohmann transfer solutions; scales to N-constraint search spaces |
-| 2 | Real-Time Streaming ML Engine | Built `streaming_ml_engine.py`: asynchronous telemetry buffering and real-time ML inference backend with dynamic batching; structurally equivalent to NVIDIA Triton Inference Server | Maintains strict 20ms SLA latency over high-frequency distributed telemetry volumes |
-| 3 | Monte Carlo IV&V Suite | Implemented `system_analytics.py`: Monte Carlo verification suite executing 1,000 stochastic docking simulations and reporting 3-sigma accuracy confidence intervals | 1,000 randomized scenarios; 3-sigma statistical flight readiness certification |
-| 4 | TLE Data Pipeline | Built `data_processor.py`: automatic parsing of live 3LE Space-Track catalogs, space-object catalog management, orbital density mapping, and data cleaning | Processes 17,000+ active satellite TLE records for real-time conjunction risk assessment |
-| 5 | Cyber Anomaly Detection | Implemented `run_anomaly_test.py`: deployment-ready Isolation Forest-based cyber anomaly detection on satellite telemetry streams | Production-grade anomaly detection; integrates with `streaming_ml_engine.py` backend |
-| 6 | Entropy Engine | Built `entropy_engine.py`: statistical analysis of state-space uncertainty and information gain for orbit estimation quality assessment | Quantifies estimation uncertainty in 6-DOF orbital state vectors |
+| 1 | Genetic Algorithm Trajectory Optimizer | Implemented `ga_optimizer.py`: multi-objective fuel-optimal trajectory optimization via Genetic Algorithms over N-dimensional search space, evading radiation belts and high-drag zones | Produces fuel-optimal Hohmann transfer solutions; tested across multiple constraint configurations |
+| 2 | Real-Time Streaming ML Engine | Built `streaming_ml_engine.py`: async telemetry buffering and real-time ML inference backend with dynamic batching | Async inference pipeline for high-frequency distributed telemetry |
+| 3 | Monte Carlo IV&V Suite | Implemented `system_analytics.py`: Monte Carlo verification suite executing 1,000 stochastic docking simulations and reporting 3-sigma accuracy confidence intervals | 1,000 randomized scenarios; 3-sigma statistical verification of docking accuracy |
+| 4 | TLE Data Pipeline | Built `data_processor.py`: parsing of live 3LE Space-Track catalogs, space-object catalog management, and data cleaning | Processes 17,000+ active satellite TLE records for conjunction risk analysis |
+| 5 | Cyber Anomaly Detection | Implemented `run_anomaly_test.py`: Isolation Forest-based anomaly detection on satellite telemetry streams | Anomaly detection integrated with streaming ML backend |
+| 6 | Entropy Engine | Built `entropy_engine.py`: statistical analysis of state-space uncertainty and information gain for orbit estimation quality | Quantifies estimation uncertainty in 6-DOF orbital state vectors |
 
-### Rhutvik Pachghare — GNC, Robotics & DevOps Engineer
+### Rhutvik Pachghare
 
-| # | Contribution Area | Details | Quantified Impact |
+| # | What I Worked On | What I Built / Learned | Outcome |
 |---|---|---|---|
-| 1 | Repository Documentation Restructure | Restructured the entire README and CODEOWNERS.md for engineering domain separation; committed as `docs: restructure repository documentation for engineering focuses` | Clear separation of GNC vs ML engineering domains; CODEOWNERS.md establishes code ownership |
-| 2 | Kubernetes Deployment Infrastructure | Added complete K8s manifests in `k8s/` directory; verified locally on Minikube; provides multi-replica deployment for production scaling | Kubernetes manifests verified on Minikube; supports EC2 + Docker + K8s deployment targets |
-| 3 | Docker & EC2 Provisioning | Added `Dockerfile`, Docker build pipeline, and `ec2-user-data.sh` for auto-provisioning EC2 instances | 3-target deployment: Docker (localhost:8501) + Kubernetes + Amazon EC2 (Port 80) |
-| 4 | CI Workflow & Test Infrastructure | Added `.github/workflows/ci.yml` and Pytest configurations; integrated `pytest.ini` and `__init__.py` to satisfy strict IDE linters | CI runs on every push to main; Pytest configured for strict type checking |
-| 5 | NVIDIA-Grade ML Platform Upgrade | Upgraded `app_dashboard.py` and `streaming_ml_engine.py` for NVIDIA-grade real-time ML platform performance | Real-time ML inference pipeline aligned with NVIDIA Triton Inference Server architecture |
+| 1 | Repository documentation restructure | Restructured the README and authored CODEOWNERS.md for engineering domain separation between GNC and ML modules | Clear separation of GNC vs ML engineering domains; CODEOWNERS.md establishes code ownership |
+| 2 | Kubernetes deployment infrastructure | Added complete K8s manifests in `k8s/` directory; verified locally on Minikube | Kubernetes manifests verified on Minikube; supports Docker + K8s + EC2 deployment targets |
+| 3 | Docker & EC2 provisioning | Added `Dockerfile`, Docker build pipeline, and `ec2-user-data.sh` for auto-provisioning EC2 instances | 3-target deployment: Docker (localhost:8501) + Kubernetes + Amazon EC2 (Port 80) |
+| 4 | CI workflow & test infrastructure | Added `.github/workflows/ci.yml` and Pytest configurations; integrated `pytest.ini` and `__init__.py` | CI runs on every push to main; Pytest configured for strict type checking |
+| 5 | Streamlit dashboard improvements | Improved `app_dashboard.py` visualization and telemetry display for real-time mission monitoring | Enhanced dashboard layout and telemetry visualization |
 
 ---
 
-**Version**: v7.0 | **License**: MIT | **Status**: Flight-Ready
+**Version**: v7.0 | **License**: MIT
