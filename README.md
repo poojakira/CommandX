@@ -23,6 +23,18 @@ CommandX is an orbital mechanics simulation platform built to explore satellite 
 
 ---
 
+## Project Background
+
+CommandX grew out of multiple satellite-ops simulations I built to study how telemetry architecture affects anomaly surfacing and operator workflows.  
+In 2026, I refactored those prototypes into a cohesive mission-control stack with:
+
+- A simulated satellite bus and configurable telemetry channels
+- ML-based anomaly surfacing over streaming data
+- A Dockerized FastAPI backend ready to plug into dashboards
+
+The goal is to approximate real mission-control constraints while remaining easy to run and extend.
+
+---
 ## 2. Module Structure
 
 ### GNC & Orbital Mechanics
