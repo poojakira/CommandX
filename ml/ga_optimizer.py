@@ -1,7 +1,7 @@
 import random
 import numpy as np
 from deap import base, creator, tools
-from mission_engine import OrbitalMechanics, MU, R_EARTH
+from gnc.mission_engine import OrbitalMechanics, MU, R_EARTH
 from data_processor import TLEProcessor  # <--- NEW CONNECTION
 
 # --- SAFE GLOBAL INITIALIZATION ---

@@ -5,19 +5,19 @@ import plotly.graph_objects as go
 import numpy as np
 import time
 
-# --- MODULE IMPORTS ---
+# --- MODULE IMPORTS (REORGANIZED) ---
 from data_processor import TLEProcessor
-from mission_engine import OrbitalMechanics, MU
-from rl_pilot import AdvancedRLPilot
-from ga_optimizer import MissionOptimizer
-from system_analytics import SystemValidator
+from gnc.mission_engine import OrbitalMechanics, MU
+from gnc.rl_pilot import AdvancedRLPilot
+from ml.ga_optimizer import MissionOptimizer
+from ml.system_analytics import SystemValidator
 from subsystem_manager import PowerThermalSubsystem
-from entropy_engine import EntropyEngine
-from graphics_engine import TacticalDisplay
-from model_3d import SatelliteModel  # 3D Visuals
-from emergency_ops import AnomalyScenario
-from streaming_ml_engine import PipelineOrchestrator
-from gnc_kalman import ExtendedKalmanFilter
+from ml.entropy_engine import EntropyEngine
+from gnc.graphics_engine import TacticalDisplay
+from gnc.model_3d import SatelliteModel  # 3D Visuals
+from gnc.emergency_ops import AnomalyScenario
+from ml.streaming_ml_engine import PipelineOrchestrator
+from gnc.gnc_kalman import ExtendedKalmanFilter
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(

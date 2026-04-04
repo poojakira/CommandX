@@ -1,6 +1,6 @@
 import time
 import sys
-from emergency_ops import AnomalyScenario
+from gnc.emergency_ops import AnomalyScenario
 
 def run_test():
     print("🛰️ COMMAND-X: EMERGENCY OPERATIONS TEST")

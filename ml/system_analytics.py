@@ -1,8 +1,8 @@
 import numpy as np
 import time
-from rl_pilot import AdvancedRLPilot
-from entropy_engine import EntropyEngine
-from mission_engine import OrbitalMechanics, MU
+from gnc.rl_pilot import AdvancedRLPilot
+from ml.entropy_engine import EntropyEngine
+from gnc.mission_engine import OrbitalMechanics, MU
 
 class SystemValidator:
     """
