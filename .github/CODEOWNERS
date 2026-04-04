@@ -1,0 +1,27 @@
+# CODEOWNERS for CommandX
+# GitHub uses this file to assign code review responsibilities
+
+# GNC & Orbital Mechanics modules
+mission_engine.py @Rhutvik-pachghare1999
+gnc_kalman.py @Rhutvik-pachghare1999
+rl_pilot.py @Rhutvik-pachghare1999
+graphics_engine.py @Rhutvik-pachghare1999
+model_3d.py @Rhutvik-pachghare1999
+subsystem_manager.py @Rhutvik-pachghare1999
+emergency_ops.py @Rhutvik-pachghare1999
+
+# ML & Data modules
+ga_optimizer.py @poojakira
+streaming_ml_engine.py @poojakira
+system_analytics.py @poojakira
+data_processor.py @poojakira
+run_anomaly_test.py @poojakira
+entropy_engine.py @poojakira
+
+# Infrastructure
+app_dashboard.py @Rhutvik-pachghare1999
+Dockerfile @Rhutvik-pachghare1999
+k8s/ @Rhutvik-pachghare1999
+
+# Default: all other files
+* @poojakira

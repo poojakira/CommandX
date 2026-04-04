@@ -1,0 +1,43 @@
+# CommandX - Mission Control Configuration Example
+
+# Simulation Parameters
+simulation:
+  dt: 0.1             # Time step (seconds)
+  frequency_hz: 50    # Ingestion frequency for telemetry
+  max_duration: 3600  # Total simulation time (seconds)
+
+# Machine Learning Engine (Streaming ML)
+ml_engine:
+  batch_size: 16
+  max_latency_ms: 20.0
+  anomaly_detector:
+    n_estimators: 100
+    contamination: 0.05
+    random_state: 42
+  trajectory_predictor:
+    alpha: 1.0
+    buffer_maxlen: 200
+
+# Telemetry Configuration
+telemetry:
+  buffer_duration_sec: 15
+  ingestion_queue_maxsize: 1000
+  channels:
+    - cpu_load
+    - memory_usage
+    - bus_temp
+    - network_tx
+
+# Genetic Algorithm Optimizer
+ga_optimizer:
+  pop_size: 50
+  generations: 15
+  mutation_rate: 0.2
+  crossover_rate: 0.5
+
+# Dashboard Settings
+dashboard:
+  theme: dark
+  refresh_rate_ms: 500
+  show_physics_engine: true
+  show_ml_insights: true
