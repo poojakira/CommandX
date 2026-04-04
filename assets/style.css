@@ -1,4 +1,4 @@
-/* Tactical Mission Control: Dark Mode Design System */
+/* Tactical Mission Control: High-Contrast Dark Mode */
 
 :root {
     --primary: #6366f1;
@@ -7,11 +7,11 @@
     --warning: #f59e0b; /* Amber */
     --critical: #ef4444; /* Red */
     --bg-deep: #0a0b10;
-    --bg-card: rgba(17, 25, 40, 0.75);
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --border: rgba(255, 255, 255, 0.1);
-    --glow: rgba(99, 102, 241, 0.2);
+    --bg-card: rgba(17, 25, 40, 0.85);
+    --text-primary: #ffffff; /* pure white for readability */
+    --text-secondary: #e2e8f0; /* bright slate */
+    --border: rgba(255, 255, 255, 0.2);
+    --glow: rgba(99, 102, 241, 0.3);
 }
 
 /* Global Application Styling */
@@ -25,18 +25,31 @@
 /* Glassmorphism Metric Cards */
 div[data-testid="stMetric"] {
     background: var(--bg-card);
-    backdrop-filter: blur(12px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
     border: 1px solid var(--border);
     padding: 24px;
     border-radius: 16px;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 div[data-testid="stMetric"]:hover {
     transform: translateY(-4px);
-    border-color: var(--primary);
-    box-shadow: 0 0 20px var(--glow);
+    border-color: var(--accent);
+    box-shadow: 0 0 25px var(--glow);
+}
+
+/* Metric Label & Value Overrides (CRITICAL FOR CONTRAST) */
+div[data-testid="stMetricLabel"] {
+    color: var(--text-secondary) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+div[data-testid="stMetricValue"] {
+    color: var(--text-primary) !important;
+    font-weight: 800 !important;
 }
 
 /* Tactical Headers */
@@ -57,6 +70,13 @@ h1, h2, h3 {
     padding-top: 2rem;
 }
 
+/* Sidebar Radio Buttons & Text */
+[data-testid="stSidebar"] .st-emotion-cache-1ky8h6r, 
+[data-testid="stSidebar"] p, 
+[data-testid="stSidebar"] span {
+    color: var(--text-primary) !important;
+}
+
 /* Custom Buttons */
 .stButton>button {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -74,25 +94,25 @@ h1, h2, h3 {
 .stButton>button:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 20px 0 var(--glow);
-    filter: brightness(1.1);
+    filter: brightness(1.2);
 }
 
 /* Anomaly Alert Banner */
 .anomaly-banner {
-    background: rgba(239, 68, 68, 0.1);
+    background: rgba(239, 68, 68, 0.15);
     border: 2px solid var(--critical);
-    color: var(--critical);
+    color: #ff8080; /* lighter red for better readability on dark */
     padding: 1.5rem;
     border-radius: 12px;
     margin: 1.5rem 0;
-    box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
     animation: critical-pulse 3s infinite;
 }
 
 @keyframes critical-pulse {
-    0% { border-color: var(--critical); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
-    50% { border-color: transparent; box-shadow: 0 0 5px rgba(239, 68, 68, 0.1); }
-    100% { border-color: var(--critical); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+    0% { border-color: var(--critical); box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
+    50% { border-color: transparent; box-shadow: 0 0 10px rgba(239, 68, 68, 0.2); }
+    100% { border-color: var(--critical); box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
 }
 
 /* Telemetry Data Grids */
@@ -105,4 +125,9 @@ div[data-testid="stDataFrame"] {
 /* Plotly Graph Overrides */
 .main-svg {
     background: transparent !important;
+}
+
+/* Captions & Small Text */
+.stCaption {
+    color: var(--text-secondary) !important;
 }
