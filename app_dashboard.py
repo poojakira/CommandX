@@ -4,6 +4,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
 import time
+import os
 
 # --- MODULE IMPORTS (REORGANIZED) ---
 from data_processor import TLEProcessor
@@ -27,84 +28,19 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- PREMIUM AESTHETICS (GLASSMORPHISM) ---
-st.markdown("""
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-    :root {
-        --primary: #6366f1;
-        --secondary: #4f46e5;
-        --accent: #10b981;
-        --bg: #f8fafc;
-        --text: #1e293b;
-    }
-    
-    .stApp { 
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        color: var(--text);
-        font-family: 'Inter', sans-serif;
-    }
-    
-    /* Glassmorphism Metric Cards */
-    div[data-testid="stMetric"] {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        transition: transform 0.2s ease-in-out;
-    }
-    div[data-testid="stMetric"]:hover {
-        transform: translateY(-2px);
-    }
-    
-    /* Sidebar Styling */
-    [data-testid="stSidebar"] {
-        background-color: #ffffff;
-        border-right: 1px solid #e2e8f0;
-    }
-    
-    /* Custom Headers */
-    h1, h2, h3 { 
-        font-weight: 700;
-        color: #0f172a;
-        letter-spacing: -0.025em;
-    }
-    
-    /* Buttons */
-    .stButton>button {
-        background: linear-gradient(to right, var(--primary), var(--secondary));
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 10px 24px;
-        font-weight: 600;
-        box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
-        transition: all 0.3s;
-    }
-    .stButton>button:hover {
-        opacity: 0.9;
-        transform: scale(1.02);
-    }
-    
-    /* Anomaly Banner */
-    .anomaly-banner {
-        background-color: #fee2e2;
-        border: 1px solid #f87171;
-        color: #991b1b;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        margin: 1rem 0;
-        animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-        0% { opacity: 1; }
-        50% { opacity: 0.8; }
-        100% { opacity: 1; }
-    }
-    </style>
-""", unsafe_allow_html=True)
+# --- DESIGN SYSTEM LOADER ---
+def load_css(file_path):
+    with open(file_path) as f:
+        st.markdown('<style>' + f.read() + '</style>', unsafe_allow_html=True)
+
+# Load Tactical Design System
+css_path = os.path.join("assets", "style.css")
+if os.path.exists(css_path):
+    load_css(css_path)
+    # Inject Google Font
+    st.markdown('<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">', unsafe_allow_html=True)
+else:
+    st.error("Technical Error: Design system (style.css) not found in assets.")
 
 # --- SIDEBAR ---
 st.sidebar.image("https://img.icons8.com/color/96/satellite-in-orbit.png", width=80)
@@ -170,8 +106,8 @@ if page == "1. Command Center":
         
         df = pd.DataFrame(sat_data)
         if not df.empty:
-            fig = px.scatter(df, x="Mean Motion", y="Inclination", color="Inclination", title="Orbit Catalog", color_continuous_scale="Bluered")
-            fig.update_layout(paper_bgcolor="white", plot_bgcolor="white", font={'color': "#1f2937"})
+            fig = px.scatter(df, x="Mean Motion", y="Inclination", color="Inclination", title="Orbit Catalog", color_continuous_scale="Electric", template="plotly_dark")
+            fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", font={'color': "#f8fafc"})
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.info("No valid telemetry for distribution plot.")
@@ -275,8 +211,8 @@ elif page == "2. Flight Dynamics (GNC)":
             'Pos Error (km)': np.sqrt(rmse_pos_list),
             'Vel Error (km/s)': np.sqrt(rmse_vel_list)
         })
-        fig_err = px.line(err_df, x='Step', y=['Pos Error (km)', 'Vel Error (km/s)'], title="EKF Error Convergence")
-        fig_err.update_layout(paper_bgcolor="white", plot_bgcolor="white")
+        fig_err = px.line(err_df, x='Step', y=['Pos Error (km)', 'Vel Error (km/s)'], title="EKF Error Convergence", template="plotly_dark")
+        fig_err.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
         st.plotly_chart(fig_err, use_container_width=True)
 
 
@@ -302,8 +238,8 @@ elif page == "3. Certification (IV&V)":
             kpi3.metric("Certification", "GROUNDED", delta="FAILED", delta_color="inverse")
             st.error("❌ System requires GNC tuning.")
 
-        fig = go.Figure(data=[go.Histogram(x=stats['raw_data'], nbinsx=20, marker_color='#0052cc')])
-        fig.update_layout(title="Monte Carlo Distribution", paper_bgcolor="white", plot_bgcolor="white")
+        fig = go.Figure(data=[go.Histogram(x=stats['raw_data'], nbinsx=20, marker_color='#6366f1')])
+        fig.update_layout(title="Monte Carlo Distribution", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)", template="plotly_dark")
         st.plotly_chart(fig, use_container_width=True)
 
 # ==============================================================================
@@ -341,9 +277,9 @@ elif page == "4. Mission Planning":
             
             x = np.linspace(160, 8000, 100)
             y = [OrbitalMechanics.hohmann_transfer(h+6378, 35786+6378) + (2.0 if h<300 else 0) + (5.0 if 1000<h<6000 else 0) for h in x]
-            fig = px.line(x=x, y=y, title="Cost Landscape (Showing Radiation Penalty Spike)")
-            fig.add_scatter(x=[alt], y=[cost], mode='markers', marker={'size': 12, 'color': 'red'}, name='Selected')
-            fig.update_layout(xaxis_title="Altitude (km)", yaxis_title="Cost (Fuel + Risk)", paper_bgcolor="white", plot_bgcolor="white")
+            fig = px.line(x=x, y=y, title="Cost Landscape (Showing Radiation Penalty Spike)", template="plotly_dark")
+            fig.add_scatter(x=[alt], y=[cost], mode='markers', marker={'size': 12, 'color': '#00f5ff'}, name='Selected')
+            fig.update_layout(xaxis_title="Altitude (km)", yaxis_title="Cost (Fuel + Risk)", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
             st.plotly_chart(fig, use_container_width=True)
 
 # ==============================================================================
@@ -404,8 +340,8 @@ elif page == "5. Emergency Operations":
                 if len(st.session_state['temp_history']) > 100:
                     st.session_state['temp_history'].pop(0)
                 
-            fig = px.line(y=st.session_state['temp_history'], title="Subsystem Thermal Telemetry (Live)")
-            fig.update_layout(xaxis_title="Time Step (100ms)", yaxis_title="Temp (°C)", paper_bgcolor="white", plot_bgcolor="white")
+            fig = px.line(y=st.session_state['temp_history'], title="Subsystem Thermal Telemetry (Live)", template="plotly_dark")
+            fig.update_layout(xaxis_title="Time Step (100ms)", yaxis_title="Temp (°C)", paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)")
             st.plotly_chart(fig, use_container_width=True)
             
             if status['active'] and not status['resolved'] and not status['failed']:
@@ -480,7 +416,8 @@ elif page == "6. ML Pipeline & Security":
             fig_pred.update_layout(
                 yaxis_title="CPU Load (%)",
                 xaxis_title="Simulation Time",
-                paper_bgcolor="white", plot_bgcolor="white",
+                paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                template="plotly_dark",
                 margin=dict(l=20, r=20, t=30, b=20),
                 height=300
             )
@@ -531,7 +468,8 @@ elif page == "6. ML Pipeline & Security":
 
             fig_sec.update_layout(
                 yaxis_title="Network TX (kbps)",
-                paper_bgcolor="white", plot_bgcolor="white",
+                paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+                template="plotly_dark",
                 margin=dict(l=20, r=20, t=30, b=20),
                 height=300
             )
@@ -553,6 +491,26 @@ elif page == "6. ML Pipeline & Security":
             use_container_width=True,
             hide_index=True
         )
+
+        st.divider()
+        with st.expander("🛠️ Data Schema & Raw Payload Inspector"):
+            st.markdown("### JSON Telemetry Definition")
+            st.code("""
+{
+  "timestamp": "float (Unix Epoch)",
+  "cpu_load": "float (0-100%)",
+  "memory_usage": "float (0-100%)",
+  "bus_temp": "float (°C)",
+  "network_tx": "float (kbps)",
+  "ml_is_anomaly": "boolean",
+  "ml_predicted_cpu_t5": "float (Inference Outcome)"
+}
+            """, language="json")
+            
+            st.markdown("### Latest Raw Payload")
+            st.json(latest_status.to_dict())
+            
+            st.info("💡 **Engineer's Note:** This stream is processed in batches (n=16) using an Isolation Forest for anomaly detection. Numerical features are normalized before scoring.")
 
         # Trigger auto-refresh for live effect
         time.sleep(0.5)

@@ -1,0 +1,12 @@
+{
+  "timestamp": 1712255400.123,
+  "generated_at": 1712255400.120,
+  "cpu_load": 45.2,
+  "memory_usage": 62.8,
+  "bus_temp": 24.5,
+  "network_tx": 512.4,
+  "ground_truth_attack": false,
+  "ml_is_anomaly": false,
+  "ml_anomaly_score": 0.85,
+  "ml_predicted_cpu_t5": 47.1
+}

@@ -1,0 +1,108 @@
+/* Tactical Mission Control: Dark Mode Design System */
+
+:root {
+    --primary: #6366f1;
+    --secondary: #a855f7;
+    --accent: #00f5ff; /* Cyan Neon */
+    --warning: #f59e0b; /* Amber */
+    --critical: #ef4444; /* Red */
+    --bg-deep: #0a0b10;
+    --bg-card: rgba(17, 25, 40, 0.75);
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --border: rgba(255, 255, 255, 0.1);
+    --glow: rgba(99, 102, 241, 0.2);
+}
+
+/* Global Application Styling */
+.stApp {
+    background-color: var(--bg-deep);
+    background-image: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15), transparent 50%);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+}
+
+/* Glassmorphism Metric Cards */
+div[data-testid="stMetric"] {
+    background: var(--bg-card);
+    backdrop-filter: blur(12px) saturate(180%);
+    border: 1px solid var(--border);
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+div[data-testid="stMetric"]:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    box-shadow: 0 0 20px var(--glow);
+}
+
+/* Tactical Headers */
+h1, h2, h3 {
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+}
+
+/* Neon Sidebar */
+[data-testid="stSidebar"] {
+    background-color: #020617;
+    border-right: 1px solid var(--border);
+}
+
+[data-testid="stSidebar"] section {
+    padding-top: 2rem;
+}
+
+/* Custom Buttons */
+.stButton>button {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 28px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    box-shadow: 0 4px 14px 0 var(--glow);
+    transition: all 0.3s ease;
+}
+
+.stButton>button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px 0 var(--glow);
+    filter: brightness(1.1);
+}
+
+/* Anomaly Alert Banner */
+.anomaly-banner {
+    background: rgba(239, 68, 68, 0.1);
+    border: 2px solid var(--critical);
+    color: var(--critical);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+    animation: critical-pulse 3s infinite;
+}
+
+@keyframes critical-pulse {
+    0% { border-color: var(--critical); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+    50% { border-color: transparent; box-shadow: 0 0 5px rgba(239, 68, 68, 0.1); }
+    100% { border-color: var(--critical); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+}
+
+/* Telemetry Data Grids */
+div[data-testid="stDataFrame"] {
+    background: var(--bg-card);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+/* Plotly Graph Overrides */
+.main-svg {
+    background: transparent !important;
+}

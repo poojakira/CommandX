@@ -11,7 +11,7 @@
 
 ## 🌍 Overview
 
-CommandX is a mission-control stack designed for satellite constellation management. It bridges the gap between high-precision orbital physics and industrial-grade observability. 
+CommandX is a mission-control stack designed for satellite constellation management. It bridges the gap between high-precision orbital physics and industrial-grade observability, now featuring a **Tactical Dark Mode** design system for reduced eye-strain during 24/7 flight operations.
 
 The system integrates live **Space-Track TLE data** with an **Extended Kalman Filter (EKF)** for state awareness, a **Genetic Algorithm (GA)** for fuel-optimal trajectory planning, and a **Streaming ML Engine** for real-time anomaly detection across distributed telemetry channels.
 
@@ -20,6 +20,7 @@ The system integrates live **Space-Track TLE data** with an **Extended Kalman Fi
 * **60.0% Fuel & Risk Optimization**: Engineered a Genetic Algorithm that autonomously routes trajectories to bypass high-density orbital shells.
 * **99.9% Verification Time Compression**: Architected a high-throughput Monte Carlo IV&V suite that executes 1,000+ simulations in under 7 minutes.
 * **3-Sigma Reliability (99.28%)**: Mathematically validated GNC robustness by simulating extreme hardware degradation (IMU drift, radiation-induced bit-flips).
+* **Tactical Dark Mode UI**: Professional-grade, high-contrast design system built with CSS-based glassmorphism for enhanced data readability.
 
 ---
 
@@ -54,6 +55,17 @@ graph TD
     GE --> EKF
     EKF --> API
 ```
+
+
+---
+
+## 📖 Technical Documentation
+
+For a deep-dive into the mathematical models, GNC logic, and streaming ML architecture, see the following:
+
+- **[Technical Architecture Deep-Dive](file:///c:/Users/pooja/Downloads/CommandX-main%20%287%29/CommandX-main/docs/TECHNICAL_DEEP_DIVE.md)**: Detailed breakdown of the EKF, Isolation Forest, and Ridge Regression implementations.
+- **[Data Model & Schema](file:///c:/Users/pooja/Downloads/CommandX-main%20%287%29/CommandX-main/docs/samples/telemetry_snapshot.json)**: JSON schema and example payload for satellite telemetry.
+- **[Walkthrough of Professionalization](file:///c:/Users/pooja/.gemini/antigravity/brain/10ca3ab7-2406-45dd-878a-67006f9f26ab/walkthrough.md)**: Summary of the recent engineering upgrades.
 
 ---
 
@@ -129,6 +141,9 @@ Results from `benchmark_load.py` under stressed simulation conditions.
 CommandX/
 ├── assets/             # Dashboards, diagrams, and visual proof
 ├── configs/            # Simulation and ML engine configurations
+├── docs/               # Technical deep-dives and data models
+│   ├── samples/        # JSON telemetry snapshots
+│   └── TECHNICAL_DEEP_DIVE.md # Core architecture docs
 ├── gnc/                # Guidance, Navigation, and Control (Physics)
 │   ├── gnc_kalman.py   # Extended Kalman Filter (EKF)
 │   ├── mission_engine.py # Orbital mechanics (J2, Hohmann)
@@ -142,7 +157,8 @@ CommandX/
 ├── results/            # Benchmark CSVs and performance reports
 ├── app_dashboard.py    # Main Streamlit Mission Control UI
 ├── benchmark_load.py   # Performance stress-test script
-└── requirements.txt    # Pinned dependencies
+├── requirements.txt    # Pinned dependencies
+└── README.md           # Project entry point
 ```
 
 ---
