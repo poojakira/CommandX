@@ -1,6 +1,6 @@
 import numpy as np
-from gnc.gnc_kalman import ExtendedKalmanFilter
-from gnc.mission_engine import OrbitalMechanics, MU
+from commandx.gnc.ekf import ExtendedKalmanFilter
+from commandx.gnc.mission_engine import OrbitalMechanics, MU
 
 class AdvancedRLPilot:
     """

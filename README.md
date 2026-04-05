@@ -5,6 +5,9 @@
 
 CommandX is a professional-grade mission-control stack for satellite constellation management. It bridges the gap between high-precision orbital physics and industrial-grade observability, featuring a **Tactical Dark Mode** design system and a **Streaming ML Inference Engine**.
 
+> [!NOTE]
+> **Project Scope**: All telemetry is simulated; this is a portfolio prototype, not connected to real satellites.
+
 ---
 
 ## 🎬 **Full Mission Walkthrough (v7.0 Master Demo)**
@@ -91,6 +94,27 @@ For a deep-dive into the mathematical models, GNC logic, and streaming ML archit
 
 ---
 
+## 🔍 Deep Dive
+
+| Component | Technical Highlights |
+| :--- | :--- |
+| **[commandx/gnc/ekf.py](file:///c:/Users/pooja/Downloads/CommandX-main%20%287%29/CommandX-main/commandx/gnc/ekf.py)** | **State Estimation**: Maps 6D state vectors `[x, y, z, vx, vy, vz]` in ECI frame. <br> **Noise Modeling**: Process noise (`Q`) tuned for J2 perturbations; Measurement noise (`R`) models IMU/GPS drift. <br> **Stability**: Jacobian-based linearization of non-linear Keplerian dynamics. |
+| **[commandx/anomaly/score.py](file:///c:/Users/pooja/Downloads/CommandX-main%20%287%29/CommandX-main/commandx/anomaly/score.py)** | **Scoring Logic**: High-throughput (50Hz) Isolation Forest inference on telemetry features (CPU, Net, Temp). <br> **Thresholding**: contamination=0.05 threshold for outlier detection. <br> **Ranking**: Decision function outputs allow for severity ranking of detected anomalies. |
+
+---
+
+## 🎬 Demo
+
+For a live demonstration of the mission control interface, see the visual proof below:
+
+![Dashboard Command Center](file:///c:/Users/pooja/Downloads/CommandX-main%20%287%29/CommandX-main/assets/dashboard_command_center_v7.png)
+*Figure 1: Global Mission Command Center with Asset Telemetry.*
+
+![Dashboard ML Security](file:///c:/Users/pooja/Downloads/CommandX-main%20%287%29/CommandX-main/assets/dashboard_ml_security_v7.png)
+*Figure 2: Real-time ML Pipeline & Cyber-Threat Detection.*
+
+---
+
 ## 📡 Telemetry & Scenarios
 
 CommandX processes standardized telemetry packets with millisecond precision. Below are the three primary operational scenarios.
@@ -162,24 +186,24 @@ Results from `benchmark_load.py` under stressed simulation conditions.
 ```text
 CommandX/
 ├── assets/             # Dashboards, diagrams, and visual proof
-├── configs/            # Simulation and ML engine configurations
-├── docs/               # Technical deep-dives and data models
-│   ├── samples/        # JSON telemetry snapshots
-│   └── TECHNICAL_DEEP_DIVE.md # Core architecture docs
-├── gnc/                # Guidance, Navigation, and Control (Physics)
-│   ├── gnc_kalman.py   # Extended Kalman Filter (EKF)
-│   ├── mission_engine.py # Orbital mechanics (J2, Hohmann)
-│   ├── rl_pilot.py     # PID-based autonomous docking pilot
-│   └── emergency_ops.py # Fail-safe and thermal anomaly logic
-├── ml/                 # Machine Learning & Streaming Analytics
-│   ├── ga_optimizer.py # Genetic Algorithm for trajectory optimization
-│   ├── streaming_ml_engine.py # Batched Isolation Forest inference
-│   └── run_anomaly_test.py # Automated incident response test script
-├── tests/              # Unit and Smoke tests (PyTest)
-├── results/            # Benchmark CSVs and performance reports
-├── app_dashboard.py    # Main Streamlit Mission Control UI
-├── benchmark_load.py   # Performance stress-test script
-├── requirements.txt    # Pinned dependencies
+├── commandx/           # Core Package (Source Code)
+│   ├── gnc/            # Guidance, Navigation, and Control
+│   │   ├── ekf.py      # Extended Kalman Filter (State Estimation)
+│   │   ├── mission_engine.py # Orbital Dynamics (J2)
+│   │   └── ...
+│   ├── anomaly/        # ML Threat Detection
+│   │   └── score.py    # Streaming ML Scoring (Isolation Forest)
+│   ├── ml/             # ML Utilities & Analytics
+│   │   └── ga_optimizer.py # Genetic Algorithm
+│   ├── data_processor.py # TLE Parsing
+│   └── subsystem_manager.py # Subsystem logic
+├── configs/            # Simulation configurations
+├── docs/               # Technical deep-dives
+├── tests/              # Unit and Smoke tests
+├── results/            # Benchmark CSVs
+├── app_dashboard.py    # Main Streamlit UI
+├── benchmark_load.py   # Performance stress-test
+├── requirements.txt    # Dependencies
 └── README.md           # Project entry point
 ```
 

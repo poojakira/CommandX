@@ -11,7 +11,7 @@ import pandas as pd
 from sklearn.ensemble import IsolationForest
 from sklearn.linear_model import Ridge
 
-from ml.models import TelemetryPacket
+from commandx.ml.models import TelemetryPacket
 
 # ==============================================================================
 # LOGGING CONFIGURATION (Enterprise Standard)

@@ -7,18 +7,18 @@ import time
 import os
 
 # --- MODULE IMPORTS (REORGANIZED) ---
-from data_processor import TLEProcessor
-from gnc.mission_engine import OrbitalMechanics, MU
-from gnc.rl_pilot import AdvancedRLPilot
-from ml.ga_optimizer import MissionOptimizer
-from ml.system_analytics import SystemValidator
-from subsystem_manager import PowerThermalSubsystem
-from ml.entropy_engine import EntropyEngine
-from gnc.graphics_engine import TacticalDisplay
-from gnc.model_3d import SatelliteModel  # 3D Visuals
-from gnc.emergency_ops import AnomalyScenario
-from ml.streaming_ml_engine import PipelineOrchestrator
-from gnc.gnc_kalman import ExtendedKalmanFilter
+from commandx.data_processor import TLEProcessor
+from commandx.gnc.mission_engine import OrbitalMechanics, MU
+from commandx.gnc.rl_pilot import AdvancedRLPilot
+from commandx.ml.ga_optimizer import MissionOptimizer
+from commandx.ml.system_analytics import SystemValidator
+from commandx.subsystem_manager import PowerThermalSubsystem
+from commandx.ml.entropy_engine import EntropyEngine
+from commandx.gnc.graphics_engine import TacticalDisplay
+from commandx.gnc.model_3d import SatelliteModel  # 3D Visuals
+from commandx.gnc.emergency_ops import AnomalyScenario
+from commandx.anomaly.score import PipelineOrchestrator
+from commandx.gnc.ekf import ExtendedKalmanFilter
 
 # --- PAGE CONFIGURATION ---
 st.set_page_config(
