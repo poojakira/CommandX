@@ -1,5 +1,4 @@
 import time
-import random
 
 class AnomalyScenario:
     """
@@ -11,12 +10,12 @@ class AnomalyScenario:
         self.resolved = False
         self.failed = False
         self.failure_reason = ""
-        self.time_limit = 30.0 # seconds
-        
+        self.time_limit = 30.0  # seconds
+
         # Scenario States
         self.payload_shutdown = False
         self.sun_shade_oriented = False
-        
+
         # Telemetry
         self.base_temp = 25.0
         self.current_temp = 25.0
@@ -35,26 +34,28 @@ class AnomalyScenario:
             return
 
         elapsed = time.time() - self.start_time
-        
+
         # Simulate Temperature Spike
         # Rise faster if nothing is done
-        heat_rate = 2.5 # degrees per second
+        heat_rate = 2.5  # degrees per second
         if self.payload_shutdown:
             heat_rate -= 1.0
         if self.sun_shade_oriented:
             heat_rate -= 1.2
-            
-        self.current_temp += heat_rate * 0.1 # Update every 100ms
-        
+
+        self.current_temp += heat_rate * 0.1  # Update every 100ms
+
         # Check for failure (timeout or critical temp)
         if elapsed > self.time_limit:
             self.failed = True
             self.failure_reason = "TIME EXPIRED: Operator failed to respond within 30s."
-        
+            return
+
         if self.current_temp > 85.0:
             self.failed = True
             self.failure_reason = "CRITICAL THERMAL BREACH: Hardware melted."
-            
+            return
+
         # Check for success
         if self.payload_shutdown and self.sun_shade_oriented and self.current_temp < 60.0:
             self.resolved = True
