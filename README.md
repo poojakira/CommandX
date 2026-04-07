@@ -1,225 +1,212 @@
-# 🛰️ CommandX: Mission-Critical Orbital Control & ML Observability
+# CommandX: Mission-Critical Orbital Control & ML Observability
 
-[![Flight Ready](https://img.shields.io/badge/Status-Flight_Ready-success?style=for-the-badge&logo=spacex)](docs/TECHNICAL_DEEP_DIVE.md)
-[![ML Ops](https://img.shields.io/badge/Engine-Streaming_ML_v2-blue?style=for-the-badge)](commandx/ml/models.py)
-
-CommandX is a professional-grade mission-control stack for satellite constellation management. It bridges the gap between high-precision orbital physics and industrial-grade observability, featuring a **Tactical Dark Mode** design system and a **Streaming ML Inference Engine**.
-
-All telemetry is simulated; this is a portfolio prototype, not connected to real satellites.
+[![Python](https://img.shields.io/badge/Python-3.10+-blue)](https://python.org) [![Streamlit](https://img.shields.io/badge/Streamlit-1.x-red)](https://streamlit.io) [![Docker](https://img.shields.io/badge/Docker-ready-blue)](Dockerfile) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
 ---
 
-## 🎬 **Full Mission Walkthrough (v7.0 Master Demo)**
+## One-Line Description
 
-![Master Walkthrough Demo](./assets/dashboard_command_center.png)
-
----
-
-## 📈 **Engineering Impact & Performance Metrics**
-*   **60.0% Fuel & Risk Optimization**: Genetic Algorithm (GA) autonomously routes trajectories to bypass high-density orbital debris shells.
-*   **99.9% Verification Time Compression**: High-throughput Monte Carlo IV&V suite executes 1,000+ stochastic simulations in under 7 minutes.
-*   **3-Sigma Reliability (99.28%)**: Validated GNC robustness by simulating extreme hardware degradation (IMU drift, radiation-induced bit-flips).
-*   **<35ms Inference Latency**: Real-time streaming anomaly detection using batched Isolation Forest on high-frequency (50Hz) telemetry.
+A real-time satellite mission-control dashboard with orbital mechanics, GNC algorithms, reinforcement learning autopilot, and streaming ML anomaly detection — built entirely in Python and Streamlit.
 
 ---
 
-## 🖼️ **Tactical UI Gallery**
+## Problem Statement
 
-````carousel
-![1. Command Center](./assets/dashboard_command_center.png)
-<!-- slide -->
-![6. ML Pipeline & Security](./assets/dashboard_ml_security.png)
-````
+Operating a satellite constellation requires simultaneous tracking of orbital mechanics, subsystem health, anomaly detection, and autonomous guidance. Existing tools are either proprietary, hardware-locked, or lack ML integration. This project delivers a full software-defined mission-control stack that anyone can run locally or deploy to the cloud.
 
 ---
 
+## Key Features
+
+- **Orbital Mechanics Engine** — J2 perturbation model, Hohmann transfer calculator, period prediction using WGS84 constants
+- **Extended Kalman Filter (EKF)** — 6-DoF state estimation (position + velocity) fused with noisy sensor measurements
+- **Advanced RL Pilot (GNC)** — PID + integral control with EKF state estimator; computes thrust commands for autonomous maneuvering
+- **TLE Processor** — Parses real Two-Line Element sets (`spacetrack_full_catalog.3le.txt`, ~4.6MB of live catalog data)
+- **Genetic Algorithm Optimizer** — Evolutionary mission planner that optimizes orbital parameters
+- **Streaming ML Inference Engine** — Online anomaly scoring with `AnomalyScenario` simulation, `PipelineOrchestrator`, and `EntropyEngine`
+- **System Analytics & Validator** — Real-time subsystem health scoring and validation
+- **Power/Thermal Subsystem Manager** — Simulates satellite bus power and thermal dynamics
+- **Streamlit Dashboard (v7.0)** — Multi-page interactive dashboard with Tactical Dark Mode UI, Plotly 3D satellite model, and real-time telemetry feed
+- **Docker + Kubernetes** — Full containerized deployment with `docker-compose.yml`, `k8s/deployment.yaml`, and `k8s/service.yaml`
+
 ---
 
-## 🏗️ **Core Engineering Stack**
-- **GNC Engine**: Extended Kalman Filter (EKF) for state estimation + J2 Perturbation physics.
-- **MLOps Platform**: Decoupled ingestion/inference pipeline with strongly-typed `TelemetryPacket` data models.
-- **Mission Control**: Streamlit-based tactical interface with real-time Plotly visualizations and emergency response simulation.
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Dashboard | Streamlit 1.x, Plotly Express, Plotly Graph Objects |
+| GNC / Physics | NumPy, custom OrbitalMechanics, EKF, PID |
+| ML / AI | Custom streaming ML engine, genetic algorithm, entropy engine |
+| Data | TLE catalog (Space-Track), Parquet traces, JSON telemetry |
+| Infrastructure | Docker, Kubernetes (k8s/), GitHub Actions CI |
+| Language | Python 3.10+ |
 
 ---
 
-## 📖 **Technical Documentation**
-- **[System Architecture & ML Deep-Dive](docs/TECHNICAL_DEEP_DIVE.md)**: Mathematical logic, data schemas, and pipeline design.
-- **[Telemetry Data Model Snapshot](docs/samples/telemetry_snapshot.json)**: Sample high-frequency telemetry payload.
-- **[Production Deployment (K8s/Docker)](docker-compose.yml)**: Orchestration for distributed mission environments.
+## Architecture
 
----
-
-## 🏗️ Architecture
-
-
-```mermaid
-graph TD
-    subgraph "Space Operations Center (SOC)"
-        UI[Streamlit Dashboard]
-        API[FastAPI Backend]
-    end
-
-    subgraph "Compute Engine"
-        GE[GA Optimizer]
-        EKF[Extended Kalman Filter]
-        ML[Streaming ML Engine]
-    end
-
-    subgraph "Data Ingestion"
-        TLE[Space-Track TLE Parser]
-        SIM[Satellite Bus Simulator]
-        BUF[Thread-Safe Circular Buffer]
-    end
-
-    TLE --> GE
-    SIM --> BUF
-    BUF --> ML
-    ML --> API
-    API --> UI
-    GE --> EKF
-    EKF --> API
 ```
-
-
----
-
-## 📖 Technical Documentation
-
-For a deep-dive into the mathematical models, GNC logic, and streaming ML architecture, see the following:
-
-- **[Technical Architecture Deep-Dive](docs/TECHNICAL_DEEP_DIVE.md)**: Detailed breakdown of the EKF, Isolation Forest, and Ridge Regression implementations.
-- **[Data Model & Schema](docs/samples/telemetry_snapshot.json)**: JSON schema and example payload for satellite telemetry.
-
----
-
-## Deep dive
-
-| Component | Technical Highlights |
-| :--- | :--- |
-| **[commandx/gnc/ekf.py](commandx/gnc/ekf.py)** | **State Estimation**: Maps 6D state vectors `[x, y, z, vx, vy, vz]` in ECI frame. <br> **Noise Modeling**: Process noise (`Q`) tuned for J2 perturbations; Measurement noise (`R`) models IMU/GPS drift. <br> **Stability**: Jacobian-based linearization of non-linear Keplerian dynamics for improved numerical stability during high-eccentricity phases. |
-| **[commandx/anomaly/score.py](commandx/anomaly/score.py)** | **Scoring Logic**: High-throughput (50Hz) Isolation Forest inference on telemetry features (CPU, Net, Temp). <br> **Thresholding**: `contamination=0.05` fixed threshold for outlier detection, balancing precision and recall. <br> **Ranking**: Decision function outputs allow for severity ranking of detected anomalies, prioritizing mission-critical threats. |
-
----
-
-## 🎬 Demo
-
-For a live demonstration of the mission control interface, see the visual proof below:
-
-![Dashboard Command Center](./assets/dashboard_command_center.png)
-*Figure 1: Global Mission Command Center with Asset Telemetry.*
-
-![Dashboard ML Security](./assets/dashboard_ml_security.png)
-*Figure 2: Real-time ML Pipeline & Cyber-Threat Detection.*
-
----
-
-## 📡 Telemetry & Scenarios
-
-CommandX processes standardized telemetry packets with millisecond precision. Below are the three primary operational scenarios.
-
-### 🛰️ Operational Scenarios
-
-| Scenario | Trigger | Key Metrics | System Response |
-| :--- | :--- | :--- | :--- |
-| **Nominal Flight** | Periodic Telemetry | CPU: 45%, Temp: 25°C, Net: 500kbps | Passive monitoring, background EKF updates. |
-| **Cyber Attack** | High-load Burst | CPU: 95%, Net: 12,500kbps | ML flags anomaly (~-0.85), triggers dashboard alert. |
-| **Thermal Runaway**| Component Failure | Temp: 75°C (+5°C/s) | Fail-safe logic engages `ORIENT_SUN_SHADE`. |
-
-### 🚨 Scenario Deep-Dives
-
-#### 1. Nominal Flight (Phase 1)
-When the system is in a stable state, the **Extended Kalman Filter** fuses noisy sensor data into high-precision state estimates.
-* **Sequence**: TLE Ingestion → SGP4 Propagator → EKF Filter → Dashboard rendering.
-* **Outcome**: ~20m positional accuracy across all tracked assets.
-
-#### 2. Cyber-Physical Attack (Phase 6)
-When an anomalous event occurs (e.g., a high-load network burst), the **Isolation Forest** detector flags the packet in real-time.
-* **Trigger**: `network_tx` spikes to 12,000 kbps (Normal: 500 kbps).
-* **Detection**: ML Engine computes an anomaly score of `-0.82` (Outlier).
-* **Action**: `emergency_ops.py` executes a thermal safe-mode lock and isolates the network bus.
-
-#### 3. Thermal Runaway (Phase 5)
-A critical failure in the battery array causes rapid heat buildup.
-* **Trigger**: Subsystem temperature exceeds 70°C.
-* **Response**: Operator must manually execute `[SHUTDOWN_PAYLOAD]` and `[ORIENT_SUN_SHADE]` within 30 seconds.
-* **Outcome**: Mission preservation through thermal dissipation and bus load reduction.
-
----
-
-## 📈 Evidence-Based Results
-
-### Performance Benchmarks (Low Load)
-*Verified on AMD Ryzen 9 5900X | 32GB RAM | Python 3.9*
-
-| Metric | Baseline | **CommandX** | Improvement |
-| :--- | :--- | :--- | :--- |
-| **State Estimation (RMSE)** | 50.0m | **19.67m** | **60.6%** |
-| **Simulation Throughput** | 1500 SPS | **3834 SPS** | **155.6%** |
-| **Telemetry E2E Latency** | 1200ms | **567.2ms** | **52.7%** |
-
-### System Footprint (100Hz Continuous Load)
-Results from `benchmark_load.py` under stressed simulation conditions.
-
-| Metric | Measurement | Threshold | Status |
-| :--- | :--- | :--- | :--- |
-| **Avg CPU Utilization** | **15.2%** | < 30% | ✅ |
-| **Peak Memory Usage** | **142.8 MB** | < 500 MB | ✅ |
-| **Pipeline Latency** | **30.7 ms** | < 50 ms | ✅ |
-| **Inference Throughput** | **94.9 Hz** | 100 Hz | ✅ |
-
----
-
-## 🖼️ Visual Proof (Mission Control v7.0)
-
-![Command Center](./assets/dashboard_command_center.png)
-*Figure 1: Global Asset Tracking & Link Budget Analysis.*
-
-![ML Security](./assets/dashboard_ml_security.png)
-*Figure 2: Real-time Cyber-Threat Detection & CPU Forecasting.*
-
----
-
-## 📂 Project Structure
-
-```text
-CommandX/
-├── assets/             # Dashboards, diagrams, and visual proof
-├── commandx/           # Core Package (Source Code)
-│   ├── gnc/            # Guidance, Navigation, and Control
-│   │   ├── ekf.py      # Extended Kalman Filter (State Estimation)
-│   │   ├── mission_engine.py # Orbital Dynamics (J2)
-│   │   └── ...
-│   ├── anomaly/        # ML Threat Detection
-│   │   └── score.py    # Streaming ML Scoring (Isolation Forest)
-│   ├── ml/             # ML Utilities & Analytics
-│   │   └── ga_optimizer.py # Genetic Algorithm
-│   ├── data_processor.py # TLE Parsing
-│   └── subsystem_manager.py # Subsystem logic
-├── configs/            # Simulation configurations
-├── docs/               # Technical deep-dives
-├── tests/              # Unit and Smoke tests
-├── results/            # Benchmark CSVs
-├── app_dashboard.py    # Main Streamlit UI
-├── benchmark_load.py   # Performance stress-test
-├── requirements.txt    # Dependencies
-└── README.md           # Project entry point
+app_dashboard.py          # Streamlit entry point (v7.0 Flight Ready)
+├── commandx/
+│   ├── gnc/
+│   │   ├── mission_engine.py     # OrbitalMechanics: J2, Hohmann, period
+│   │   ├── rl_pilot.py           # AdvancedRLPilot: PID + EKF GNC system
+│   │   ├── ekf.py                # ExtendedKalmanFilter: 6-DoF state estimator
+│   │   ├── emergency_ops.py      # AnomalyScenario: fault injection
+│   │   ├── graphics_engine.py    # TacticalDisplay: 2D/3D orbital renders
+│   │   └── model_3d.py           # SatelliteModel: 3D Plotly visuals
+│   ├── ml/
+│   │   ├── ga_optimizer.py       # MissionOptimizer: genetic algorithm
+│   │   ├── system_analytics.py   # SystemValidator: health checks
+│   │   └── entropy_engine.py     # EntropyEngine: information-theoretic analysis
+│   ├── anomaly/score.py          # PipelineOrchestrator: anomaly scoring
+│   ├── subsystem_manager.py      # PowerThermalSubsystem
+│   └── data_processor.py        # TLEProcessor: parses TLE catalog
+├── assets/style.css              # Tactical Dark Mode design system
+└── docker-compose.yml            # Single-command local deployment
 ```
 
 ---
 
-## ⚡ Quick Start
+## Installation
 
-### 1. Install Dependencies
+### Local (Python)
+
 ```bash
+git clone https://github.com/poojakira/Mission-Control-Telemetry-Simulator.git
+cd Mission-Control-Telemetry-Simulator
 pip install -r requirements.txt
-```
-
-### 2. Launch Mission Control
-```bash
 streamlit run app_dashboard.py
 ```
 
+### Docker
+
+```bash
+docker-compose up --build
+# Dashboard available at http://localhost:8501
+```
+
+### Kubernetes
+
+```bash
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+```
+
 ---
 
-## 📜 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Usage
+
+1. Launch the dashboard: `streamlit run app_dashboard.py`
+2. Navigate the sidebar tabs: Mission Control, ML Security, GNC Autopilot, Anomaly Detection
+3. The TLE processor automatically loads `spacetrack_full_catalog.3le.txt` for real satellite tracking
+4. Anomaly scenarios can be triggered from the dashboard to simulate fault conditions
+5. The RL Pilot tab shows live EKF state estimation and thrust commands in real-time
+
+---
+
+## Configuration
+
+Copy and edit the example config:
+
+```bash
+cp configs/config.example.yaml config.yaml
+```
+
+Key parameters:
+- `satellite.mass`: Spacecraft bus mass (kg), default 500.0
+- `satellite.max_thrust`: Maximum thruster force (N), default 50.0
+- `gnc.settling_time`: PID settling time (s), default 70.0
+- `gnc.damping`: Damping ratio, default 0.9
+
+---
+
+## Module Reference
+
+| Module | Class | Purpose |
+|---|---|---|
+| `commandx.gnc.mission_engine` | `OrbitalMechanics` | J2 perturbations, Hohmann transfers |
+| `commandx.gnc.rl_pilot` | `AdvancedRLPilot` | PID+EKF GNC with thrust allocation |
+| `commandx.gnc.ekf` | `ExtendedKalmanFilter` | 6-DoF sensor fusion |
+| `commandx.gnc.emergency_ops` | `AnomalyScenario` | Fault injection and recovery |
+| `commandx.ml.ga_optimizer` | `MissionOptimizer` | Evolutionary orbital planner |
+| `commandx.ml.system_analytics` | `SystemValidator` | Subsystem health validation |
+| `commandx.ml.entropy_engine` | `EntropyEngine` | Information-theoretic telemetry analysis |
+| `commandx.anomaly.score` | `PipelineOrchestrator` | End-to-end anomaly scoring pipeline |
+| `commandx.subsystem_manager` | `PowerThermalSubsystem` | Power and thermal dynamics |
+| `commandx.data_processor` | `TLEProcessor` | TLE catalog parsing |
+
+---
+
+## Results
+
+- Dashboard renders live orbital telemetry for the full Space-Track catalog (~4.6MB TLE data)
+- EKF converges state estimation within ~10 simulation steps
+- Genetic algorithm optimizes Hohmann transfer delta-v in under 1 second for typical LEO scenarios
+- Anomaly detector achieves < 50ms inference latency per telemetry frame
+- Benchmark results available in `results/benchmark_report.csv`
+
+---
+
+## Tests
+
+```bash
+pytest tests/ -v
+```
+
+Test coverage:
+- `tests/test_smoke.py` — Full import and instantiation smoke tests
+- `tests/test_streaming_ml.py` — Streaming ML engine integration tests
+
+---
+
+## Project Structure
+
+```
+.
+├── app_dashboard.py          # Main Streamlit app (v7.0)
+├── commandx/                 # Core library
+│   ├── gnc/                  # Guidance, Navigation, Control
+│   ├── ml/                   # Machine learning modules
+│   ├── anomaly/              # Anomaly scoring
+│   └── subsystem_manager.py  # Power/thermal
+├── assets/                   # CSS, screenshots
+├── configs/                  # YAML configs
+├── docs/                     # Technical docs
+├── k8s/                      # Kubernetes manifests
+├── tests/                    # Test suite
+├── Dockerfile
+├── docker-compose.yml
+└── requirements.txt
+```
+
+---
+
+## Roadmap
+
+- [ ] Live WebSocket telemetry feed replacing simulated data
+- [ ] Multi-satellite constellation tracking on 3D globe
+- [ ] PyTorch-based LSTM anomaly detector replacing rule-based system
+- [ ] Integration with real Space-Track.org API for live TLE updates
+- [ ] Reinforcement learning (PPO) autopilot replacing PID
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Pull requests welcome. Please run `pytest tests/` before submitting.
+
+---
+
+## License
+
+MIT License — see [LICENSE](LICENSE).
+
+---
+
+## Author
+
+Built by [@poojakira](https://github.com/poojakira) — Robotics & Automation Engineering, Arizona State University.
+
+> **Note:** All telemetry data is simulated. This is a portfolio demonstration project, not connected to real satellites.
