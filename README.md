@@ -1,4 +1,4 @@
-# Mission-Control-Telemetry-Simulator (CommandX)
+# Mission-Control-Telemetry-Simulator 
 
 [![Python](https://img.shields.io/badge/Python-3.10+-blue)](https://python.org)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.x-red)](https://streamlit.io)
